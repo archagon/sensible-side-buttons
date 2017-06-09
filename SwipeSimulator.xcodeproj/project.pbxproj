@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		4E9995151EE7172700A1CFA6 /* TouchEvents.c in Sources */ = {isa = PBXBuildFile; fileRef = 4ECC16A21EE54D870062AC72 /* TouchEvents.c */; };
 		4EC7C3B91EE711B400C9F725 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EC7C3B81EE711B400C9F725 /* AppDelegate.m */; };
-		4EC7C3BC1EE711B400C9F725 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EC7C3BB1EE711B400C9F725 /* ViewController.m */; };
 		4EC7C3BE1EE711B400C9F725 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4EC7C3BD1EE711B400C9F725 /* Assets.xcassets */; };
 		4EC7C3C41EE711B400C9F725 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EC7C3C31EE711B400C9F725 /* main.m */; };
 		4ECC169A1EE54D3D0062AC72 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 4ECC16991EE54D3D0062AC72 /* main.m */; };
@@ -44,8 +43,6 @@
 		4EC7C3B51EE711B400C9F725 /* SideButtonFixer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SideButtonFixer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4EC7C3B71EE711B400C9F725 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		4EC7C3B81EE711B400C9F725 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		4EC7C3BA1EE711B400C9F725 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
-		4EC7C3BB1EE711B400C9F725 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
 		4EC7C3BD1EE711B400C9F725 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		4EC7C3C21EE711B400C9F725 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4EC7C3C31EE711B400C9F725 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -90,8 +87,6 @@
 			children = (
 				4EC7C3B71EE711B400C9F725 /* AppDelegate.h */,
 				4EC7C3B81EE711B400C9F725 /* AppDelegate.m */,
-				4EC7C3BA1EE711B400C9F725 /* ViewController.h */,
-				4EC7C3BB1EE711B400C9F725 /* ViewController.m */,
 				4EC7C3BD1EE711B400C9F725 /* Assets.xcassets */,
 				4EC7C3C21EE711B400C9F725 /* Info.plist */,
 				4EC7C3C31EE711B400C9F725 /* main.m */,
@@ -259,7 +254,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4EC7C3BC1EE711B400C9F725 /* ViewController.m in Sources */,
 				4EC7C3C41EE711B400C9F725 /* main.m in Sources */,
 				4E9995151EE7172700A1CFA6 /* TouchEvents.c in Sources */,
 				4EC7C3B91EE711B400C9F725 /* AppDelegate.m in Sources */,

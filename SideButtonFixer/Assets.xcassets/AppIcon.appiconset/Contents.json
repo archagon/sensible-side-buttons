@@ -26,13 +26,15 @@
       "scale" : "1x"
     },
     {
-      "idiom" : "mac",
       "size" : "128x128",
+      "idiom" : "mac",
+      "filename" : "MacIcon6_ .png",
       "scale" : "2x"
     },
     {
-      "idiom" : "mac",
       "size" : "256x256",
+      "idiom" : "mac",
+      "filename" : "MacIcon6_ -1.png",
       "scale" : "1x"
     },
     {

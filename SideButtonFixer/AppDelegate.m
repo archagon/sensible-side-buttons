@@ -6,6 +6,9 @@
 //  Copyright © 2017 Alexei Baboulevitch. All rights reserved.
 //
 
+// side button sunrise? sunshine? savior?
+// sensible side buttons
+
 #import "AppDelegate.h"
 #import "TouchEvents.h"
 
@@ -113,10 +116,6 @@ typedef NS_ENUM(NSInteger, MenuMode) {
     // create status bar item
     {
         self.statusItem = [[NSStatusBar systemStatusBar] statusItemWithLength:NSSquareStatusItemLength];
-        
-        if (self.statusItem.button != nil) {
-            self.statusItem.button.image = [NSImage imageNamed:@"MenuIcon"];
-        }
     }
     
     // create menu
@@ -145,8 +144,10 @@ typedef NS_ENUM(NSInteger, MenuMode) {
         aboutText.view = text;
         [menu addItem:aboutText];
         
+        [menu addItem:[NSMenuItem separatorItem]];
+        
         NSString* appName = [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString*)kCFBundleNameKey];
-        [menu addItem:[[NSMenuItem alloc] initWithTitle:@"Donation Webpage" action:@selector(donate:) keyEquivalent:@""]];
+        [menu addItem:[[NSMenuItem alloc] initWithTitle:@"Amazon Affiliate Link" action:@selector(donate:) keyEquivalent:@""]];
         
         [menu addItem:[[NSMenuItem alloc] initWithTitle:[NSString stringWithFormat:@"%@ Website", appName] action:@selector(website:) keyEquivalent:@""]];
         
@@ -161,10 +162,10 @@ typedef NS_ENUM(NSInteger, MenuMode) {
         self.statusItem.menu = menu;
     }
     
+    [self startTap:[[NSUserDefaults standardUserDefaults] boolForKey:@"SBFWasEnabled"]];
+    
     [self updateMenuMode];
     [self refreshSettings];
-    
-    [self startTap:[[NSUserDefaults standardUserDefaults] boolForKey:@"SBFWasEnabled"]];
 }
 
 -(void) updateMenuMode {
@@ -174,7 +175,7 @@ typedef NS_ENUM(NSInteger, MenuMode) {
 -(void) updateMenuMode:(BOOL)active {
     //NSDictionary* options = @{ (__bridge id)kAXTrustedCheckOptionPrompt: @(active ? YES : NO) };
     //BOOL accessibilityEnabled = AXIsProcessTrustedWithOptions((CFDictionaryRef)options);
-    BOOL accessibilityEnabled = YES;
+    BOOL accessibilityEnabled = YES; //is accessibility even required?
     
     if (accessibilityEnabled) {
         if ([[NSUserDefaults standardUserDefaults] boolForKey:@"SBFDonated"]) {
@@ -197,30 +198,43 @@ typedef NS_ENUM(NSInteger, MenuMode) {
         case MenuModeAccessibility:
             self.statusItem.menu.itemArray[0].enabled = NO;
             self.statusItem.menu.itemArray[1].enabled = NO;
-            self.statusItem.menu.itemArray[4].hidden = YES;
             self.statusItem.menu.itemArray[5].hidden = YES;
-            self.statusItem.menu.itemArray[6].hidden = NO;
+            self.statusItem.menu.itemArray[6].hidden = YES;
+            self.statusItem.menu.itemArray[7].hidden = NO;
             break;
         case MenuModeDonation:
             self.statusItem.menu.itemArray[0].enabled = YES;
             self.statusItem.menu.itemArray[1].enabled = YES;
-            self.statusItem.menu.itemArray[4].hidden = NO;
             self.statusItem.menu.itemArray[5].hidden = NO;
-            self.statusItem.menu.itemArray[6].hidden = YES;
+            self.statusItem.menu.itemArray[6].hidden = NO;
+            self.statusItem.menu.itemArray[7].hidden = YES;
             break;
         case MenuModeNormal:
             self.statusItem.menu.itemArray[0].enabled = YES;
             self.statusItem.menu.itemArray[1].enabled = YES;
-            self.statusItem.menu.itemArray[4].hidden = YES;
-            self.statusItem.menu.itemArray[5].hidden = NO;
-            self.statusItem.menu.itemArray[6].hidden = YES;
+            self.statusItem.menu.itemArray[5].hidden = YES;
+            self.statusItem.menu.itemArray[6].hidden = NO;
+            self.statusItem.menu.itemArray[7].hidden = YES;
             break;
     }
     
+    CGFloat width = 325;
+    CGFloat gap = 0;
+    CGFloat hKludge = 8; //without this, the sizing is sometimes wrong... argh!
+    CGFloat vKludge = -4;
     AboutView* view = (AboutView*)self.statusItem.menu.itemArray[3].view;
-    NSRect rect = [view.text.string boundingRectWithSize:NSMakeSize(350 - [view margin], INFINITY) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{ NSFontAttributeName: view.text.font }];
-    view.frame = NSMakeRect(0, 0, rect.size.width + [view margin], rect.size.height + 8);
+    NSRect rect = [view.text.textStorage boundingRectWithSize:NSMakeSize(width - [view margin] - hKludge, CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading];
+    view.frame = NSMakeRect(0, 0, width, rect.size.height + gap + vKludge);
     [view layoutSubtreeIfNeeded];
+    
+    if (self.statusItem.button != nil) {
+        if (self.tap != NULL && CGEventTapIsEnabled(self.tap)) {
+            self.statusItem.button.image = [NSImage imageNamed:@"MenuIcon"];
+        }
+        else {
+            self.statusItem.button.image = [NSImage imageNamed:@"MenuIconDisabled"];
+        }
+    }
 }
 
 -(void) startTap:(BOOL)start {
@@ -265,7 +279,7 @@ typedef NS_ENUM(NSInteger, MenuMode) {
 }
 
 -(void) donate:(id)sender {
-    [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString: @"http://www.google.com"]];
+    [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString: @"http://amzn.to/2rCm88M"]];
     [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"SBFDonated"];
     
     [self updateMenuMode];
@@ -334,7 +348,7 @@ typedef NS_ENUM(NSInteger, MenuMode) {
             [self.text.textStorage setAttributedString:string];
         } break;
         case MenuModeDonation: {
-            NSString* text = [NSString stringWithFormat:@"Thank you for using %@! This app is free because I consider it a missing core feature of the OS. However, if you have the time and inclination to leave a small donation, I would be incredibly thankful. 😊", appDescription];
+            NSString* text = [NSString stringWithFormat:@"Thank you for using %@! This app is free because I believe it should really be the default behavior in OS X. However, I would be incredibly grateful if you consider making your next Amazon purchase through my affiliate link. It wouldn't cost you anything extra while still helping to cover the development of %@ and other useful apps! 😊", appDescription, appName];
             
             NSMutableAttributedString* string = [[NSMutableAttributedString alloc] initWithString:text attributes:attributes];
             [string addAttribute:NSFontAttributeName value:boldFont range:[text rangeOfString:appDescription]];
@@ -343,7 +357,7 @@ typedef NS_ENUM(NSInteger, MenuMode) {
             [self.text.textStorage setAttributedString:string];
         } break;
         case MenuModeNormal: {
-            NSString* text = [NSString stringWithFormat:@"Thank you for considering a donation to %@! Hope you have a great and productive day. 😊", appDescription];
+            NSString* text = [NSString stringWithFormat:@"Thank you for using %@! Have a lovely and productive day. 😊", appDescription];
             
             NSMutableAttributedString* string = [[NSMutableAttributedString alloc] initWithString:text attributes:attributes];
             [string addAttribute:NSFontAttributeName value:boldFont range:[text rangeOfString:appDescription]];
@@ -365,7 +379,6 @@ typedef NS_ENUM(NSInteger, MenuMode) {
         [self.text setEditable:NO];
         [self.text setSelectable:NO];
         [self addSubview:self.text];
-        self.text.frame = self.bounds;
         
         self.menuMode = MenuModeNormal;
     }
