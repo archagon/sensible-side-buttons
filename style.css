@@ -1,0 +1,189 @@
+/*variables*/
+/*globals*/
+html {
+  font-size: 19px; }
+  @media screen and (max-width: 550px) {
+    html {
+      font-size: 14px; } }
+
+body {
+  box-sizing: border-box; }
+
+/*fonts*/
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Helvetica Neue",Helvetica,Arial,sans-serif; }
+
+/*generic elements*/
+figure {
+  margin-left: 0;
+  margin-right: 0;
+  text-align: center; }
+
+figcaption {
+  font-style: italic;
+  color: gray; }
+
+h2 {
+  color: #444;
+  font-size: 1.7em;
+  border-bottom: solid lightgray 1px;
+  margin-top: 1.8rem;
+  margin-bottom: 0.5em; }
+
+/*custom elements*/
+.responsive {
+  max-width: 100%;
+  height: auto; }
+
+/*widths*/
+.content,
+.footer {
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1rem;
+  padding-right: 1rem; }
+
+.box-padding {
+  max-width: 550px;
+  margin-left: auto;
+  margin-right: auto; }
+
+/*vertical spacing*/
+.box-padding {
+  margin-top: 1.8rem;
+  margin-bottom: 1.8rem; }
+  @media screen and (max-width: 550px) {
+    .box-padding {
+      margin-top: 0; } }
+
+.box > .logo {
+  margin-bottom: 0.75rem;
+  /*better optics with the shadow*/ }
+
+.meat > .blurb {
+  margin-bottom: 0.75rem; }
+
+.content {
+  margin-bottom: 1.8rem; }
+
+/*button*/
+/*appearance*/
+.btn {
+  padding: 0.6rem 1.2rem 0.6rem 1.2rem;
+  font-size: 1.0rem;
+  font-family: avenir, 'avenir next', helvetica, arial, sans-serif;
+  font-weight: 500;
+  text-shadow: none;
+  border-radius: 0.5rem; }
+  .btn:link, .btn:visited, .btn:hover, .btn:active {
+    text-decoration: none; }
+
+.btn-subtitle {
+  font-size: 0.6em;
+  font-style: italic; }
+
+/*layout*/
+.btn {
+  display: inline-flex;
+  /*this is the only way I can get the contents of two buttons to center*/
+  flex-direction: row;
+  align-items: center;
+  vertical-align: middle;
+  /*this fixes the !@#$ problem where images have extra px when on same line*/ }
+  .btn > * {
+    margin-right: 0.7rem; }
+  .btn > *:last-child {
+    margin-right: 0; }
+
+.btn-title {
+  display: block; }
+
+.btn-subtitle {
+  display: block; }
+
+/*button styles*/
+.btn {
+  background-color: gray;
+  /*link text color can't cascade*/ }
+  .btn:link, .btn:visited, .btn:hover, .btn:active {
+    color: white; }
+
+.btn-primary {
+  background-color: #2F79B9; }
+
+.btn-secondary {
+  background-color: #58B957; }
+
+.btn-amazon {
+  background-color: brown;
+  border-radius: 0.3rem; }
+
+.btn-donate {
+  border-radius: 0.3rem;
+  background: #4398C3; }
+
+/*box*/
+/*appearance*/
+.box {
+  background-color: #B7E6FB;
+  padding: 0.75rem;
+  border-radius: 1rem;
+  text-align: center; }
+  @media screen and (max-width: 550px) {
+    .box {
+      border-radius: 0; } }
+
+.blurb {
+  /*elements here are tuned for appearance, not legibility*/
+  font-family: avenir, 'avenir next', helvetica, arial, sans-serif;
+  padding-left: 2rem;
+  padding-right: 2rem; }
+  .blurb p {
+    margin: 0; }
+  .blurb h1 {
+    margin-top: 0;
+    margin-bottom: 0.25em; }
+  .blurb p {
+    color: #1F6E8F; }
+  .blurb h1 {
+    color: #10445A;
+    font-weight: 1000; }
+  @media screen and (max-width: 550px) {
+    .blurb {
+      padding-left: 0;
+      padding-right: 0; } }
+
+/*layout*/
+.links {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: stretch;
+  align-content: stretch;
+  flex-wrap: wrap; }
+  .links > * {
+    /*ensures that there are no weird gaps no matter the wrapping*/
+    margin: 0.35rem; }
+
+/*content*/
+/*donations*/
+/*layout*/
+.donations {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  align-content: stretch;
+  flex-wrap: wrap;
+  margin: -0.35rem; }
+  .donations > * {
+    margin: 0.35rem; }
+
+/*footer*/
+.footer {
+  border-top: solid lightgray 1px;
+  font-family: avenir, 'avenir next', helvetica, arial, sans-serif;
+  font-size: 0.9em;
+  color: gray; }
+
+/*# sourceMappingURL=style.css.map */
