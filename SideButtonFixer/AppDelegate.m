@@ -1,13 +1,23 @@
 //
 //  AppDelegate.m
-//  SideButtonFixer
 //
-//  Created by Alexei Baboulevitch on 2017-6-6.
-//  Copyright © 2017 Alexei Baboulevitch. All rights reserved.
+// SensibleSideButtons, a utility that fixes the navigation buttons on third-party mice in macOS
+// Copyright (C) 2017 Alexei Baboulevitch (ssb@archagon.net)
 //
-
-// side button sunrise? sunshine? savior?
-// sensible side buttons
+// This program is free software; you can redistribute it and/or
+// modify it under the terms of the GNU General Public License
+// as published by the Free Software Foundation; either version 2
+// of the License, or (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+//
 
 #import "AppDelegate.h"
 #import "TouchEvents.h"
@@ -139,8 +149,8 @@ typedef NS_ENUM(NSInteger, MenuMode) {
         
         [menu addItem:[NSMenuItem separatorItem]];
         
-        AboutView* text = [[AboutView alloc] initWithFrame:NSMakeRect(0, 0, 100, 100)]; //arbitrary frame
-        NSMenuItem* aboutText = [[NSMenuItem alloc] initWithTitle:@"Title" action:NULL keyEquivalent:@""];
+        AboutView* text = [[AboutView alloc] initWithFrame:NSMakeRect(0, 0, 320, 100)]; //arbitrary height
+        NSMenuItem* aboutText = [[NSMenuItem alloc] initWithTitle:@"Text" action:NULL keyEquivalent:@""];
         aboutText.view = text;
         [menu addItem:aboutText];
         
@@ -218,14 +228,9 @@ typedef NS_ENUM(NSInteger, MenuMode) {
             break;
     }
     
-    CGFloat width = 325;
-    CGFloat gap = 0;
-    CGFloat hKludge = 8; //without this, the sizing is sometimes wrong... argh!
-    CGFloat vKludge = -4;
     AboutView* view = (AboutView*)self.statusItem.menu.itemArray[3].view;
-    NSRect rect = [view.text.textStorage boundingRectWithSize:NSMakeSize(width - [view margin] - hKludge, CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading];
-    view.frame = NSMakeRect(0, 0, width, rect.size.height + gap + vKludge);
-    [view layoutSubtreeIfNeeded];
+    [view layoutSubtreeIfNeeded]; //used to auto-calculate the text view size
+    view.frame = NSMakeRect(0, 0, view.bounds.size.width, view.text.frame.size.height);
     
     if (self.statusItem.button != nil) {
         if (self.tap != NULL && CGEventTapIsEnabled(self.tap)) {
@@ -310,14 +315,14 @@ typedef NS_ENUM(NSInteger, MenuMode) {
 @implementation AboutView
 
 -(CGFloat) margin {
-    return 16;
+    return 17;
 }
 
 -(void)setMenuMode:(MenuMode)menuMode {
     _menuMode = menuMode;
     
     CGFloat color = 120;
-    NSFont* font = [NSFont menuFontOfSize:14];
+    NSFont* font = [NSFont menuFontOfSize:13];
     
     NSFontDescriptor* boldFontDesc = [NSFontDescriptor fontDescriptorWithFontAttributes:@{
                                                                                           NSFontFamilyAttribute: font.familyName,
@@ -339,7 +344,7 @@ typedef NS_ENUM(NSInteger, MenuMode) {
     
     switch (menuMode) {
         case MenuModeAccessibility: {
-            NSString* text = [NSString stringWithFormat:@"Uh-oh! It looks like %@ is not whitelisted in the Accessibility panel of your Security & Privacy System Preferences. The app needs this permission to process global mouse events. (Otherwise, it would have to run as root!) Please open the Accessibility panel below and add the app to the whitelist.", appDescription];
+            NSString* text = [NSString stringWithFormat:@"Uh-oh! It looks like %@ is not whitelisted in the Accessibility panel of your Security & Privacy System Preferences. This app needs this permission to process global mouse events. (Otherwise, it would have to run as root!) Please open the Accessibility panel below and add the app to the whitelist.", appDescription];
             
             NSMutableAttributedString* string = [[NSMutableAttributedString alloc] initWithString:text attributes:attributes];
             [string addAttribute:NSFontAttributeName value:boldFont range:[text rangeOfString:appDescription]];
@@ -348,7 +353,7 @@ typedef NS_ENUM(NSInteger, MenuMode) {
             [self.text.textStorage setAttributedString:string];
         } break;
         case MenuModeDonation: {
-            NSString* text = [NSString stringWithFormat:@"Thank you for using %@! This app is free because I believe it should really be the default behavior in OS X. However, I would be incredibly grateful if you consider making your next Amazon purchase through my affiliate link. It wouldn't cost you anything extra while still helping to cover the development of %@ and other useful apps! 😊", appDescription, appName];
+            NSString* text = [NSString stringWithFormat:@"Thank you for using %@! If you find this utility useful, please consider making a purchase through the Amazon affiliate link on the website below. It wouldn't cost you anything extra while still helping to cover the development of this and other useful apps! 😊", appDescription];
             
             NSMutableAttributedString* string = [[NSMutableAttributedString alloc] initWithString:text attributes:attributes];
             [string addAttribute:NSFontAttributeName value:boldFont range:[text rangeOfString:appDescription]];
@@ -357,7 +362,7 @@ typedef NS_ENUM(NSInteger, MenuMode) {
             [self.text.textStorage setAttributedString:string];
         } break;
         case MenuModeNormal: {
-            NSString* text = [NSString stringWithFormat:@"Thank you for using %@! Have a lovely and productive day. 😊", appDescription];
+            NSString* text = [NSString stringWithFormat:@"Thank you for using %@. Have a lovely and productive day! 😊", appDescription];
             
             NSMutableAttributedString* string = [[NSMutableAttributedString alloc] initWithString:text attributes:attributes];
             [string addAttribute:NSFontAttributeName value:boldFont range:[text rangeOfString:appDescription]];
@@ -374,6 +379,10 @@ typedef NS_ENUM(NSInteger, MenuMode) {
     self = [super initWithFrame:frameRect];
     
     if (self) {
+        //NSTextView* testColor = [NSTextView new];
+        //testColor.backgroundColor = NSColor.greenColor;
+        //[self addSubview:testColor];
+        
         self.text = [NSTextView new];
         self.text.backgroundColor = NSColor.clearColor;
         [self.text setEditable:NO];
@@ -390,7 +399,24 @@ typedef NS_ENUM(NSInteger, MenuMode) {
     [super layout];
     
     CGFloat margin = [self margin];
-    self.text.frame = NSMakeRect(margin, 0, self.bounds.size.width - margin, self.bounds.size.height);
+    
+    // text view sizing
+    {
+        // first, set the correct width
+        CGFloat arbitraryHeight = 100;
+        self.text.frame = NSMakeRect(margin, 0, self.bounds.size.width - margin, arbitraryHeight);
+        
+        // next, autosize to get the height
+        [self.text sizeToFit];
+        
+        // finally, position the view correctly
+        self.text.frame = NSMakeRect(self.text.frame.origin.x, self.bounds.size.height - self.text.frame.size.height, self.text.frame.size.width, self.text.frame.size.height);
+    }
+    
+    //NSView* testView = [self subviews][0];
+    //testView.frame = self.bounds;
+    
+    NSLog(@"Text size: %@, self size: %@", NSStringFromSize(self.text.frame.size), NSStringFromSize(self.bounds.size));
 }
 
 @end
