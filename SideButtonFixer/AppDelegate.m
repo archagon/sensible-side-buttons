@@ -157,7 +157,7 @@ typedef NS_ENUM(NSInteger, MenuMode) {
         [menu addItem:[NSMenuItem separatorItem]];
         
         NSString* appName = [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString*)kCFBundleNameKey];
-        [menu addItem:[[NSMenuItem alloc] initWithTitle:@"Amazon Affiliate Link" action:@selector(donate:) keyEquivalent:@""]];
+        [menu addItem:[[NSMenuItem alloc] initWithTitle:[NSString stringWithFormat:@"%@ Website", appName] action:@selector(donate:) keyEquivalent:@""]];
         
         [menu addItem:[[NSMenuItem alloc] initWithTitle:[NSString stringWithFormat:@"%@ Website", appName] action:@selector(website:) keyEquivalent:@""]];
         
@@ -185,7 +185,7 @@ typedef NS_ENUM(NSInteger, MenuMode) {
 -(void) updateMenuMode:(BOOL)active {
     //NSDictionary* options = @{ (__bridge id)kAXTrustedCheckOptionPrompt: @(active ? YES : NO) };
     //BOOL accessibilityEnabled = AXIsProcessTrustedWithOptions((CFDictionaryRef)options);
-    BOOL accessibilityEnabled = YES; //is accessibility even required?
+    BOOL accessibilityEnabled = YES; //is accessibility even required? seems to work fine without it
     
     if (accessibilityEnabled) {
         if ([[NSUserDefaults standardUserDefaults] boolForKey:@"SBFDonated"]) {
@@ -198,6 +198,9 @@ typedef NS_ENUM(NSInteger, MenuMode) {
     else {
         self.menuMode = MenuModeAccessibility;
     }
+    
+    // QQQ: for testing
+    //self.menuMode = arc4random_uniform(3);
 }
 
 -(void) refreshSettings {
@@ -209,14 +212,14 @@ typedef NS_ENUM(NSInteger, MenuMode) {
             self.statusItem.menu.itemArray[0].enabled = NO;
             self.statusItem.menu.itemArray[1].enabled = NO;
             self.statusItem.menu.itemArray[5].hidden = YES;
-            self.statusItem.menu.itemArray[6].hidden = YES;
+            self.statusItem.menu.itemArray[6].hidden = NO;
             self.statusItem.menu.itemArray[7].hidden = NO;
             break;
         case MenuModeDonation:
             self.statusItem.menu.itemArray[0].enabled = YES;
             self.statusItem.menu.itemArray[1].enabled = YES;
             self.statusItem.menu.itemArray[5].hidden = NO;
-            self.statusItem.menu.itemArray[6].hidden = NO;
+            self.statusItem.menu.itemArray[6].hidden = YES;
             self.statusItem.menu.itemArray[7].hidden = YES;
             break;
         case MenuModeNormal:
@@ -284,7 +287,7 @@ typedef NS_ENUM(NSInteger, MenuMode) {
 }
 
 -(void) donate:(id)sender {
-    [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString: @"http://amzn.to/2rCm88M"]];
+    [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString: @"http://sensible-side-buttons.archagon.net#donations"]];
     [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"SBFDonated"];
     
     [self updateMenuMode];
@@ -292,7 +295,7 @@ typedef NS_ENUM(NSInteger, MenuMode) {
 }
 
 -(void) website:(id)sender {
-    [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString: @"http://beta-blog.archagon.net"]];
+    [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString: @"http://sensible-side-buttons.archagon.net"]];
 }
 
 -(void) accessibility:(id)sender {
@@ -344,7 +347,7 @@ typedef NS_ENUM(NSInteger, MenuMode) {
     
     switch (menuMode) {
         case MenuModeAccessibility: {
-            NSString* text = [NSString stringWithFormat:@"Uh-oh! It looks like %@ is not whitelisted in the Accessibility panel of your Security & Privacy System Preferences. This app needs this permission to process global mouse events. (Otherwise, it would have to run as root!) Please open the Accessibility panel below and add the app to the whitelist.", appDescription];
+            NSString* text = [NSString stringWithFormat:@"Uh-oh! It looks like %@ is not whitelisted in the Accessibility panel of your Security & Privacy System Preferences. This app needs to be on the Accessibility whitelist in order to process global mouse events. (Otherwise, it would have to run as root!) Please open the Accessibility panel below and add the app to the whitelist.", appDescription];
             
             NSMutableAttributedString* string = [[NSMutableAttributedString alloc] initWithString:text attributes:attributes];
             [string addAttribute:NSFontAttributeName value:boldFont range:[text rangeOfString:appDescription]];
@@ -353,7 +356,7 @@ typedef NS_ENUM(NSInteger, MenuMode) {
             [self.text.textStorage setAttributedString:string];
         } break;
         case MenuModeDonation: {
-            NSString* text = [NSString stringWithFormat:@"Thank you for using %@! If you find this utility useful, please consider making a purchase through the Amazon affiliate link on the website below. It wouldn't cost you anything extra while still helping to cover the development of this and other useful apps! 😊", appDescription];
+            NSString* text = [NSString stringWithFormat:@"Thank you for using %@! If you find this utility useful, please consider making a purchase through the Amazon affiliate link on the website below. It won't cost you anything extra while helping fund the development of this and other useful apps! 😊", appDescription];
             
             NSMutableAttributedString* string = [[NSMutableAttributedString alloc] initWithString:text attributes:attributes];
             [string addAttribute:NSFontAttributeName value:boldFont range:[text rangeOfString:appDescription]];
@@ -362,7 +365,7 @@ typedef NS_ENUM(NSInteger, MenuMode) {
             [self.text.textStorage setAttributedString:string];
         } break;
         case MenuModeNormal: {
-            NSString* text = [NSString stringWithFormat:@"Thank you for using %@. Have a lovely and productive day! 😊", appDescription];
+            NSString* text = [NSString stringWithFormat:@"Thank you for using %@! Made by Alexei Baboulevitch (Archagon).", appDescription];
             
             NSMutableAttributedString* string = [[NSMutableAttributedString alloc] initWithString:text attributes:attributes];
             [string addAttribute:NSFontAttributeName value:boldFont range:[text rangeOfString:appDescription]];
@@ -416,7 +419,7 @@ typedef NS_ENUM(NSInteger, MenuMode) {
     //NSView* testView = [self subviews][0];
     //testView.frame = self.bounds;
     
-    NSLog(@"Text size: %@, self size: %@", NSStringFromSize(self.text.frame.size), NSStringFromSize(self.bounds.size));
+    //NSLog(@"Text size: %@, self size: %@", NSStringFromSize(self.text.frame.size), NSStringFromSize(self.bounds.size));
 }
 
 @end
