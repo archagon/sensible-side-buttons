@@ -40,7 +40,7 @@
                 </div>
 
                 <div class="links">
-                    <a href="https://github.com/archagon/sensible-side-buttons" role="button" class="btn btn-primary">
+                    <a href="SensibleSideButtons-1.0.dmg" role="button" class="btn btn-primary">
                         <img src="menu-white.png" width="22px" height="22px" class="btn-icon" />
                         <span class="btn-title">Download v1.0<span>
                         <span class="btn-subtitle">For macOS 10.10+</span>
@@ -138,6 +138,8 @@
                 <p>In order to create the gesture code for an application called <a href="http://calftrail.com/sesamouse/">Sesamouse</a>, developer Nathan Vander Wilt reverse-engineered the data structure of gesture-based NSEvents and <a href="https://github.com/calftrail/Touch">released his work as open source</a>. Playing around with his functions, I quickly discovered the winning combination that would get me the same gesture events that the Master was sending out. The swipe event didn't even require a mouse position, so there was no need to reason about coordinates. It was as simple as a <code>NSEventPhaseBegan</code> event followed immediately by a <code>NSEventPhaseEnded</code> event.</p>
 
                 <p>The other half of the app was stifling the M4 and M5 commands and replacing them with this falsified gesture. Fortunately, macOS provides a very easy way to do this through the use of event taps. With a simple call to <code>CGEventTapCreate</code> and a filter of <code>kCGEventOtherMouseUp</code> and <code>kCGEventOtherMouseDown</code>, a callback is scheduled for each numbered mouse button click. The callback allows you to return an event other than the default, and so I simply returned <code>NULL</code> for M4 and M5 and then sent out my fake events instead. As far as I can tell, event taps have almost no overhead.</p>
+
+                <p>You can get the source code (<a href="https://github.com/archagon/sensible-side-buttons/blob/master/LICENSE">GPLv2</a>) for SensibleSideButtons on <a href="https://github.com/archagon/sensible-side-buttons">Github</a> or <a href="sensible-side-buttons-master-1.0.zip">as a zip</a>.</p>
             </div>
 
             <div>
