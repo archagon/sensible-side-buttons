@@ -77,6 +77,12 @@ h2 {
 .meat > .blurb {
     margin-bottom: $vertical-sm;
 }
+.meat > .links {
+    margin-bottom: $vertical-sm;
+}
+.meat > .amazon-plug {
+    margin-bottom: $vertical-sm;
+}
 .content {
     margin-bottom: $vertical;
 }
@@ -194,6 +200,21 @@ h2 {
     @media screen and (max-width: $compact) {
         padding-left: 0;
         padding-right: 0;
+    }
+}
+.amazon-plug {
+    font-size: 0.8em;
+    color: #1F6E8F;
+
+    padding-left: 4rem;
+    padding-right: 4rem;
+    @media screen and (max-width: $compact) {
+        padding-left: 2rem;
+        padding-right: 2rem;
+    }
+
+    p {
+        margin: 0;
     }
 }
 /*layout*/

@@ -64,6 +64,12 @@ h2 {
 .meat > .blurb {
   margin-bottom: 0.75rem; }
 
+.meat > .links {
+  margin-bottom: 0.75rem; }
+
+.meat > .amazon-plug {
+  margin-bottom: 0.75rem; }
+
 .content {
   margin-bottom: 1.8rem; }
 
@@ -153,6 +159,18 @@ h2 {
     .blurb {
       padding-left: 0;
       padding-right: 0; } }
+
+.amazon-plug {
+  font-size: 0.8em;
+  color: #1F6E8F;
+  padding-left: 4rem;
+  padding-right: 4rem; }
+  @media screen and (max-width: 550px) {
+    .amazon-plug {
+      padding-left: 2rem;
+      padding-right: 2rem; } }
+  .amazon-plug p {
+    margin: 0; }
 
 /*layout*/
 .links {
