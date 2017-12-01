@@ -39,16 +39,18 @@ static void SBFFakeSwipe(TLInfoSwipeDirection dir) {
 static CGEventRef SBFMouseCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef event, void *refcon) {
     int64_t number = CGEventGetIntegerValueField(event, kCGMouseEventButtonNumber);
     BOOL down = (CGEventGetType(event) == kCGEventOtherMouseDown);
-    BOOL mouseDown = [[NSUserDefaults standardUserDefaults] boolForKey:@"SBFMouseDown"];
     
-    if (number == 3) {
+    BOOL mouseDown = [[NSUserDefaults standardUserDefaults] boolForKey:@"SBFMouseDown"];
+    BOOL swapButtons = [[NSUserDefaults standardUserDefaults] boolForKey:@"SBFSwapButtons"];
+    
+    if (number == (swapButtons ? 4 : 3)) {
         if ((mouseDown && down) || (!mouseDown && !down)) {
             SBFFakeSwipe(kTLInfoSwipeLeft);
         }
         
         return NULL;
     }
-    else if (number == 4) {
+    else if (number == (swapButtons ? 3 : 4)) {
         if ((mouseDown && down) || (!mouseDown && !down)) {
             SBFFakeSwipe(kTLInfoSwipeRight);
         }
@@ -89,7 +91,7 @@ typedef NS_ENUM(NSInteger, MenuMode) {
 
 -(void)setMenuMode:(MenuMode)menuMode {
     _menuMode = menuMode;
-    AboutView* view = (AboutView*)self.statusItem.menu.itemArray[3].view;
+    AboutView* view = (AboutView*)self.statusItem.menu.itemArray[4].view;
     view.menuMode = menuMode;
     [self refreshSettings];
 }
@@ -99,6 +101,7 @@ typedef NS_ENUM(NSInteger, MenuMode) {
                                                               @"SBFWasEnabled": @YES,
                                                               @"SBFMouseDown": @YES,
                                                               @"SBFDonated": @NO,
+                                                              @"SBFSwapButtons": @NO
                                                               }];
     
     // setup globals
@@ -141,6 +144,10 @@ typedef NS_ENUM(NSInteger, MenuMode) {
         NSMenuItem* modeItem = [[NSMenuItem alloc] initWithTitle:@"Trigger on Mouse Down" action:@selector(mouseDownToggle:) keyEquivalent:@""];
         modeItem.state = NSControlStateValueOn;
         [menu addItem:modeItem];
+        
+        NSMenuItem* swapItem = [[NSMenuItem alloc] initWithTitle:@"Swap Buttons" action:@selector(swapToggle:) keyEquivalent:@""];
+        swapItem.state = NSControlStateValueOff;
+        [menu addItem:swapItem];
         
         //[menu addItem:[NSMenuItem separatorItem]];
         //NSMenuItem* mouseItem = [[NSMenuItem alloc] initWithTitle:@"G403" action:@selector(act:) keyEquivalent:@""];
@@ -206,32 +213,36 @@ typedef NS_ENUM(NSInteger, MenuMode) {
 -(void) refreshSettings {
     self.statusItem.menu.itemArray[0].state = self.tap != NULL && CGEventTapIsEnabled(self.tap);
     self.statusItem.menu.itemArray[1].state = [[NSUserDefaults standardUserDefaults] boolForKey:@"SBFMouseDown"];
+    self.statusItem.menu.itemArray[2].state = [[NSUserDefaults standardUserDefaults] boolForKey:@"SBFSwapButtons"];
     
     switch (self.menuMode) {
         case MenuModeAccessibility:
             self.statusItem.menu.itemArray[0].enabled = NO;
             self.statusItem.menu.itemArray[1].enabled = NO;
-            self.statusItem.menu.itemArray[5].hidden = YES;
-            self.statusItem.menu.itemArray[6].hidden = NO;
+            self.statusItem.menu.itemArray[2].enabled = NO;
+            self.statusItem.menu.itemArray[6].hidden = YES;
             self.statusItem.menu.itemArray[7].hidden = NO;
+            self.statusItem.menu.itemArray[8].hidden = NO;
             break;
         case MenuModeDonation:
             self.statusItem.menu.itemArray[0].enabled = YES;
             self.statusItem.menu.itemArray[1].enabled = YES;
-            self.statusItem.menu.itemArray[5].hidden = NO;
-            self.statusItem.menu.itemArray[6].hidden = YES;
+            self.statusItem.menu.itemArray[2].enabled = YES;
+            self.statusItem.menu.itemArray[6].hidden = NO;
             self.statusItem.menu.itemArray[7].hidden = YES;
+            self.statusItem.menu.itemArray[8].hidden = YES;
             break;
         case MenuModeNormal:
             self.statusItem.menu.itemArray[0].enabled = YES;
             self.statusItem.menu.itemArray[1].enabled = YES;
-            self.statusItem.menu.itemArray[5].hidden = YES;
-            self.statusItem.menu.itemArray[6].hidden = NO;
-            self.statusItem.menu.itemArray[7].hidden = YES;
+            self.statusItem.menu.itemArray[2].enabled = YES;
+            self.statusItem.menu.itemArray[6].hidden = YES;
+            self.statusItem.menu.itemArray[7].hidden = NO;
+            self.statusItem.menu.itemArray[8].hidden = YES;
             break;
     }
     
-    AboutView* view = (AboutView*)self.statusItem.menu.itemArray[3].view;
+    AboutView* view = (AboutView*)self.statusItem.menu.itemArray[4].view;
     [view layoutSubtreeIfNeeded]; //used to auto-calculate the text view size
     view.frame = NSMakeRect(0, 0, view.bounds.size.width, view.text.frame.size.height);
     
@@ -283,6 +294,11 @@ typedef NS_ENUM(NSInteger, MenuMode) {
 
 -(void) mouseDownToggle:(id)sender {
     [[NSUserDefaults standardUserDefaults] setBool:![[NSUserDefaults standardUserDefaults] boolForKey:@"SBFMouseDown"] forKey:@"SBFMouseDown"];
+    [self refreshSettings];
+}
+
+-(void) swapToggle:(id)sender {
+    [[NSUserDefaults standardUserDefaults] setBool:![[NSUserDefaults standardUserDefaults] boolForKey:@"SBFSwapButtons"] forKey:@"SBFSwapButtons"];
     [self refreshSettings];
 }
 
@@ -347,7 +363,7 @@ typedef NS_ENUM(NSInteger, MenuMode) {
     
     switch (menuMode) {
         case MenuModeAccessibility: {
-            NSString* text = [NSString stringWithFormat:@"Uh-oh! It looks like %@ is not whitelisted in the Accessibility panel of your Security & Privacy System Preferences. This app needs to be on the Accessibility whitelist in order to process global mouse events. (Otherwise, it would have to run as root!) Please open the Accessibility panel below and add the app to the whitelist.", appDescription];
+            NSString* text = [NSString stringWithFormat:@"Uh-oh! It looks like %@ is not whitelisted in the Accessibility panel of your Security & Privacy System Preferences. This app needs to be on the Accessibility whitelist in order to process global mouse events. (Otherwise, it would have to run as root!) Please open the Accessibility panel below and add the app to the whitelist.\nCopyright © 2017 Alexei Baboulevitch.", appDescription];
             
             NSMutableAttributedString* string = [[NSMutableAttributedString alloc] initWithString:text attributes:attributes];
             [string addAttribute:NSFontAttributeName value:boldFont range:[text rangeOfString:appDescription]];
@@ -356,7 +372,7 @@ typedef NS_ENUM(NSInteger, MenuMode) {
             [self.text.textStorage setAttributedString:string];
         } break;
         case MenuModeDonation: {
-            NSString* text = [NSString stringWithFormat:@"Thank you for using %@! If you find this utility useful, please consider making a purchase through the Amazon affiliate link on the website below. It won't cost you anything extra while helping fund the development of this and other useful apps! 😊", appDescription];
+            NSString* text = [NSString stringWithFormat:@"Thanks for using %@!\nIf you find this utility useful, please consider making a purchase through the Amazon affiliate link on the website below. It won't cost you anything while helping fund the development of this and other useful apps! 😊\nCopyright © 2017 Alexei Baboulevitch.", appDescription];
             
             NSMutableAttributedString* string = [[NSMutableAttributedString alloc] initWithString:text attributes:attributes];
             [string addAttribute:NSFontAttributeName value:boldFont range:[text rangeOfString:appDescription]];
@@ -365,7 +381,7 @@ typedef NS_ENUM(NSInteger, MenuMode) {
             [self.text.textStorage setAttributedString:string];
         } break;
         case MenuModeNormal: {
-            NSString* text = [NSString stringWithFormat:@"Thank you for using %@! Made by Alexei Baboulevitch (Archagon).", appDescription];
+            NSString* text = [NSString stringWithFormat:@"Thanks for using %@!\nCopyright © 2017 Alexei Baboulevitch.", appDescription];
             
             NSMutableAttributedString* string = [[NSMutableAttributedString alloc] initWithString:text attributes:attributes];
             [string addAttribute:NSFontAttributeName value:boldFont range:[text rangeOfString:appDescription]];
