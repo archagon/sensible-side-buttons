@@ -1,4 +1,11 @@
-Exporting app:
+# Building app
+
+1. In the Xcode Project Navigator select the SwipeSimulator project.
+2. For each of the Targets "swipesiml", "swipesimr" change Signing > Team to "None".
+3. For the target "SensibleSideButtons" change Signing > Team to a team you have access to.
+4. Run.
+
+# Exporting app
 
 1. archive
 2. "Export" -> "Developer ID"
