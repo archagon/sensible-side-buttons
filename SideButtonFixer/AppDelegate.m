@@ -96,6 +96,14 @@ typedef NS_ENUM(NSInteger, MenuMode) {
     [self refreshSettings];
 }
 
+// If the application is launched when it's already running show the icon in the menu bar again
+-(BOOL) applicationShouldHandleReopen:(NSApplication *)sender hasVisibleWindows:(BOOL)flag {
+    if (@available(macOS 10.12, *)) {
+        [self.statusItem setVisible:YES];
+    }
+    return NO;
+}
+
 -(void) applicationDidFinishLaunching:(NSNotification *)aNotification {
     [[NSUserDefaults standardUserDefaults] registerDefaults:@{
                                                               @"SBFWasEnabled": @YES,
@@ -139,14 +147,17 @@ typedef NS_ENUM(NSInteger, MenuMode) {
         menu.delegate = self;
         
         NSMenuItem* enabledItem = [[NSMenuItem alloc] initWithTitle:@"Enabled" action:@selector(enabledToggle:) keyEquivalent:@"e"];
+        // index 0
         [menu addItem:enabledItem];
         
         NSMenuItem* modeItem = [[NSMenuItem alloc] initWithTitle:@"Trigger on Mouse Down" action:@selector(mouseDownToggle:) keyEquivalent:@""];
         modeItem.state = NSControlStateValueOn;
+        // index 1
         [menu addItem:modeItem];
         
         NSMenuItem* swapItem = [[NSMenuItem alloc] initWithTitle:@"Swap Buttons" action:@selector(swapToggle:) keyEquivalent:@""];
         swapItem.state = NSControlStateValueOff;
+        // index 2
         [menu addItem:swapItem];
         
         //[menu addItem:[NSMenuItem separatorItem]];
@@ -154,26 +165,47 @@ typedef NS_ENUM(NSInteger, MenuMode) {
         //mouseItem.state = NSControlStateValueOn;
         //[menu addItem:mouseItem];
         
+        // index 3
         [menu addItem:[NSMenuItem separatorItem]];
         
         AboutView* text = [[AboutView alloc] initWithFrame:NSMakeRect(0, 0, 320, 100)]; //arbitrary height
         NSMenuItem* aboutText = [[NSMenuItem alloc] initWithTitle:@"Text" action:NULL keyEquivalent:@""];
         aboutText.view = text;
+        // index 4
         [menu addItem:aboutText];
         
+        // index 5
         [menu addItem:[NSMenuItem separatorItem]];
         
         NSString* appName = [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString*)kCFBundleNameKey];
+        // index 6
         [menu addItem:[[NSMenuItem alloc] initWithTitle:[NSString stringWithFormat:@"%@ Website", appName] action:@selector(donate:) keyEquivalent:@""]];
         
+        // index 7
         [menu addItem:[[NSMenuItem alloc] initWithTitle:[NSString stringWithFormat:@"%@ Website", appName] action:@selector(website:) keyEquivalent:@""]];
         
+        // index 8
         [menu addItem:[[NSMenuItem alloc] initWithTitle:@"Open Accessibility Whitelist" action:@selector(accessibility:) keyEquivalent:@""]];
         
+        // index 9
         [menu addItem:[NSMenuItem separatorItem]];
         
+        // Only show the menu item to hide the icon if the API is available (macOS 10.12+)
+        if (@available(macOS 10.12, *)) {
+            NSMenuItem* hideItem = [[NSMenuItem alloc] initWithTitle:@"Hide Menu Bar Icon" action:@selector(hideMenubarItem:) keyEquivalent:@"h"];
+            // index 10
+            [menu addItem:hideItem];
+            NSMenuItem* hideInfoItem = [[NSMenuItem alloc] initWithTitle:@"Relaunch application to show again" action:NULL keyEquivalent:@""];
+            [hideInfoItem setEnabled:NO];
+            // index 11
+            [menu addItem:hideInfoItem];
+
+            [menu addItem:[NSMenuItem separatorItem]];
+        }
+
         NSMenuItem* quit = [[NSMenuItem alloc] initWithTitle:@"Quit" action:@selector(quit:) keyEquivalent:@"q"];
         quit.keyEquivalentModifierMask = NSEventModifierFlagCommand;
+        // index 12
         [menu addItem:quit];
         
         self.statusItem.menu = menu;
@@ -318,6 +350,13 @@ typedef NS_ENUM(NSInteger, MenuMode) {
     [self updateMenuMode];
     [self refreshSettings];
 }
+
+-(void) hideMenubarItem:(id)sender {
+    if (@available(macOS 10.12, *)) {
+        [self.statusItem setVisible:NO];
+    }
+}
+
 
 -(void) quit:(id)sender {
     [NSApp terminate:self];
