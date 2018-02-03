@@ -107,7 +107,7 @@ typedef NS_ENUM(NSInteger, MenuItem) {
     nullArray = nil;
 }
 
--(void)setMenuMode:(MenuMode)menuMode {
+-(void) setMenuMode:(MenuMode)menuMode {
     _menuMode = menuMode;
     AboutView* view = (AboutView*)self.statusItem.menu.itemArray[MenuItemAboutText].view;
     view.menuMode = menuMode;
@@ -189,10 +189,6 @@ typedef NS_ENUM(NSInteger, MenuItem) {
         [menu addItem:hideItem];
         assert(menu.itemArray.count - 1 == MenuItemStartupHide);
         
-        //[menu addItem:[NSMenuItem separatorItem]];
-        //NSMenuItem* mouseItem = [[NSMenuItem alloc] initWithTitle:@"G403" action:@selector(act:) keyEquivalent:@""];
-        //mouseItem.state = NSControlStateValueOn;
-        //[menu addItem:mouseItem];
         NSMenuItem* hideInfoItem = [[NSMenuItem alloc] initWithTitle:@"Relaunch application to show again" action:NULL keyEquivalent:@""];
         [hideInfoItem setEnabled:NO];
         [menu addItem:hideInfoItem];
@@ -387,12 +383,11 @@ typedef NS_ENUM(NSInteger, MenuItem) {
     }
 }
 
-
 -(void) quit:(id)sender {
     [NSApp terminate:self];
 }
 
-- (void)menuWillOpen:(NSMenu *)menu {
+- (void) menuWillOpen:(NSMenu*)menu {
     // TODO: theoretically, accessibility can be disabled while the menu is opened, but this is unlikely
     [self updateMenuMode:NO];
     [self refreshSettings];
@@ -406,7 +401,7 @@ typedef NS_ENUM(NSInteger, MenuItem) {
     return 17;
 }
 
--(void)setMenuMode:(MenuMode)menuMode {
+-(void) setMenuMode:(MenuMode)menuMode {
     _menuMode = menuMode;
     
     CGFloat color = 120;
@@ -463,7 +458,7 @@ typedef NS_ENUM(NSInteger, MenuItem) {
     [self setNeedsLayout:YES];
 }
 
--(instancetype)initWithFrame:(NSRect)frameRect {
+-(instancetype) initWithFrame:(NSRect)frameRect {
     self = [super initWithFrame:frameRect];
     
     if (self) {
@@ -483,7 +478,7 @@ typedef NS_ENUM(NSInteger, MenuItem) {
     return self;
 }
 
--(void)layout {
+-(void) layout {
     [super layout];
     
     CGFloat margin = [self margin];
