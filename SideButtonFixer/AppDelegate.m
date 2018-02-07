@@ -365,6 +365,8 @@ typedef NS_ENUM(NSInteger, MenuMode) {
     
     NSString* appName = [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString*)kCFBundleNameKey];
     NSString* appDescription = [NSString stringWithFormat:@"%@ %@", appName, [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"]];
+    NSString* appCopyright = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"NSHumanReadableCopyright"];
+    
     NSString* localizedString = nil;
     
     switch (menuMode) {
@@ -380,16 +382,18 @@ typedef NS_ENUM(NSInteger, MenuMode) {
     }
     
     if (localizedString != nil) {
-
+        
         NSString* text = [NSString stringWithFormat:localizedString, appDescription];
-
+        
+        text = [text stringByAppendingFormat:@"\n%@", appCopyright];
+        
         NSMutableAttributedString* string = [[NSMutableAttributedString alloc] initWithString:text attributes:attributes];
         [string addAttribute:NSFontAttributeName value:boldFont range:[text rangeOfString:appDescription]];
         [string addAttribute:NSForegroundColorAttributeName value:boldColor range:[text rangeOfString:appDescription]];
-
+        
         [self.text.textStorage setAttributedString:string];
     }
-
+    
     [self setNeedsLayout:YES];
 }
 
