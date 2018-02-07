@@ -365,37 +365,31 @@ typedef NS_ENUM(NSInteger, MenuMode) {
     
     NSString* appName = [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString*)kCFBundleNameKey];
     NSString* appDescription = [NSString stringWithFormat:@"%@ %@", appName, [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"]];
+    NSString* localizedString = nil;
     
     switch (menuMode) {
         case MenuModeAccessibility: {
-            NSString* text = [NSString stringWithFormat:@"Uh-oh! It looks like %@ is not whitelisted in the Accessibility panel of your Security & Privacy System Preferences. This app needs to be on the Accessibility whitelist in order to process global mouse events. (Otherwise, it would have to run as root!) Please open the Accessibility panel below and add the app to the whitelist.\nCopyright © 2017 Alexei Baboulevitch.", appDescription];
-            
-            NSMutableAttributedString* string = [[NSMutableAttributedString alloc] initWithString:text attributes:attributes];
-            [string addAttribute:NSFontAttributeName value:boldFont range:[text rangeOfString:appDescription]];
-            [string addAttribute:NSForegroundColorAttributeName value:boldColor range:[text rangeOfString:appDescription]];
-            
-            [self.text.textStorage setAttributedString:string];
+            localizedString = NSLocalizedString(@"MenuModeAccessibilityAboutViewText", "");
         } break;
         case MenuModeDonation: {
-            NSString* text = [NSString stringWithFormat:@"Thanks for using %@!\nIf you find this utility useful, please consider making a purchase through the Amazon affiliate link on the website below. It won't cost you anything while helping fund the development of this and other useful apps! 😊\nCopyright © 2017 Alexei Baboulevitch.", appDescription];
-            
-            NSMutableAttributedString* string = [[NSMutableAttributedString alloc] initWithString:text attributes:attributes];
-            [string addAttribute:NSFontAttributeName value:boldFont range:[text rangeOfString:appDescription]];
-            [string addAttribute:NSForegroundColorAttributeName value:boldColor range:[text rangeOfString:appDescription]];
-            
-            [self.text.textStorage setAttributedString:string];
+            localizedString = NSLocalizedString(@"MenuModeDonationAboutViewText", "");
         } break;
         case MenuModeNormal: {
-            NSString* text = [NSString stringWithFormat:@"Thanks for using %@!\nCopyright © 2017 Alexei Baboulevitch.", appDescription];
-            
-            NSMutableAttributedString* string = [[NSMutableAttributedString alloc] initWithString:text attributes:attributes];
-            [string addAttribute:NSFontAttributeName value:boldFont range:[text rangeOfString:appDescription]];
-            [string addAttribute:NSForegroundColorAttributeName value:boldColor range:[text rangeOfString:appDescription]];
-            
-            [self.text.textStorage setAttributedString:string];
+            localizedString = NSLocalizedString(@"MenuModeNormalAboutViewText", "");
         } break;
     }
     
+    if (localizedString != nil) {
+
+        NSString* text = [NSString stringWithFormat:localizedString, appDescription];
+
+        NSMutableAttributedString* string = [[NSMutableAttributedString alloc] initWithString:text attributes:attributes];
+        [string addAttribute:NSFontAttributeName value:boldFont range:[text rangeOfString:appDescription]];
+        [string addAttribute:NSForegroundColorAttributeName value:boldColor range:[text rangeOfString:appDescription]];
+
+        [self.text.textStorage setAttributedString:string];
+    }
+
     [self setNeedsLayout:YES];
 }
 
