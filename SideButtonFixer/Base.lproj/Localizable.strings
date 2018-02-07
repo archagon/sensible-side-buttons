@@ -1,0 +1,11 @@
+/* 
+  Localizable.strings
+  SwipeSimulator
+
+  Created by Luna on 07/02/18.
+  Copyright © 2018 Alexei Baboulevitch. All rights reserved.
+*/
+
+"MenuModeDonationAboutViewText" = "Thanks for using %@!\nIf you find this utility useful, please consider making a purchase through the Amazon affiliate link on the website below. It won't cost you anything while helping fund the development of this and other useful apps! 😊";
+"MenuModeAccessibilityAboutViewText" = "Uh-oh! It looks like %@ is not whitelisted in the Accessibility panel of your Security & Privacy System Preferences. This app needs to be on the Accessibility whitelist in order to process global mouse events. (Otherwise, it would have to run as root!) Please open the Accessibility panel below and add the app to the whitelist.";
+"MenuModeNormalAboutViewText" = "Thanks for using %@!";
