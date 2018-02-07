@@ -6,6 +6,7 @@
   Copyright © 2018 Alexei Baboulevitch. All rights reserved.
 */
 
-"MenuModeDonationAboutViewText" = "Thanks for using %@!\nIf you find this utility useful, please consider making a purchase through the Amazon affiliate link on the website below. It won't cost you anything while helping fund the development of this and other useful apps! 😊";
-"MenuModeAccessibilityAboutViewText" = "Uh-oh! It looks like %@ is not whitelisted in the Accessibility panel of your Security & Privacy System Preferences. This app needs to be on the Accessibility whitelist in order to process global mouse events. (Otherwise, it would have to run as root!) Please open the Accessibility panel below and add the app to the whitelist.";
-"MenuModeNormalAboutViewText" = "Thanks for using %@!";
+"MenuModeDonationAboutViewText" = "Grazie per aver usato %@!\
+Se lo trovi utile, considera di effettuare un acquisto tramite il link affiliato Amazon nel link al sito web sottostante. Non ti costerà nulla e contribuirai allo sviluppo di questa e altre app! 😊";
+"MenuModeAccessibilityAboutViewText" = "Uh-oh! Sembra che %@ non sia tra i ... nel pannello Accessibilità di Sicurezza e Privacynot whitelisted in the Accessibility panel of your Security & Privacy System Preferences. Questa app ha bisogno di questi permessi per poter leggere gli eventi globali del mouse. (Altrimenti, puoi avviarla come utente root!) Per cortesia apri il pannello Accessibilità e aggiungi l'app aiThis app needs to be on the Accessibility whitelist in order to process global mouse events. (Otherwise, it would have to run as root!) Please open the Accessibility panel below and add the app to the whitelist.";
+"MenuModeNormalAboutViewText" = "Grazie per aver usato %@!";
