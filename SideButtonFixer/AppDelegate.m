@@ -345,23 +345,35 @@ typedef NS_ENUM(NSInteger, MenuMode) {
 -(void)setMenuMode:(MenuMode)menuMode {
     _menuMode = menuMode;
     
-    CGFloat color = [self isDarkMode] ? 255.f : 0.f;
+    CGFloat baseColor = [self isDarkMode] ? 200.f : 100.f;
+    
     NSFont* font = [NSFont menuFontOfSize:13];
     
-    NSFontDescriptor* boldFontDesc = [NSFontDescriptor fontDescriptorWithFontAttributes:@{
-                                                                                          NSFontFamilyAttribute: font.familyName,
-                                                                                          NSFontFaceAttribute: @"Bold"
-                                                                                          }];
-    NSFont* boldFont = [NSFont fontWithDescriptor:boldFontDesc size:font.pointSize];
-    if (!boldFont) { boldFont = font; }
+    NSFontDescriptor* boldFontDesc = [NSFontDescriptor fontDescriptorWithFontAttributes:
+                                      @{
+                                        NSFontFamilyAttribute: font.familyName,
+                                        NSFontFaceAttribute: @"Bold"
+                                        }
+                                      ];
     
-    CGFloat boldHue = color;
+    NSFont* boldFont = [NSFont fontWithDescriptor:boldFontDesc size:font.pointSize];
+    
+    boldFont = !boldFont ? font : boldFont;
+    
+    CGFloat boldHue = baseColor;
+    
+    NSColor* normalColor = [NSColor colorWithRed:boldHue/255.0 green:boldHue/255.0 blue:boldHue/255.0 alpha:1];
+    NSColor* alertColor = [NSColor colorWithRed:229.f/255.f green:57.f/255.f blue:53.f/255.f alpha:1.f];
     NSColor* boldColor = [NSColor colorWithRed:boldHue/255.0 green:boldHue/255.0 blue:boldHue/255.0 alpha:1];
     
-    NSDictionary* attributes = @{
-                                 NSFontAttributeName: font,
-                                 NSForegroundColorAttributeName: [NSColor colorWithRed:color/255.0 green:color/255.0 blue:color/255.0 alpha:1]
-                                 };
+    NSMutableDictionary* attributes = [NSMutableDictionary new];
+    NSMutableDictionary* boldAttributes = [NSMutableDictionary new];
+    
+    [attributes setObject:font forKey:NSFontAttributeName];
+    [attributes setObject:normalColor forKey:NSForegroundColorAttributeName];
+    
+    [boldAttributes setObject:boldFont forKey:NSFontAttributeName];
+    [boldAttributes setObject:boldColor forKey:NSForegroundColorAttributeName];
     
     NSString* appName = [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString*)kCFBundleNameKey];
     NSString* appDescription = [NSString stringWithFormat:@"%@ %@", appName, [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"]];
@@ -372,6 +384,8 @@ typedef NS_ENUM(NSInteger, MenuMode) {
     switch (menuMode) {
         case MenuModeAccessibility: {
             localizedString = NSLocalizedString(@"MenuModeAccessibilityAboutViewText", "");
+            [attributes setObject:alertColor forKey:NSForegroundColorAttributeName];
+            [boldAttributes setObject:alertColor forKey:NSForegroundColorAttributeName];
         } break;
         case MenuModeDonation: {
             localizedString = NSLocalizedString(@"MenuModeDonationAboutViewText", "");
@@ -388,8 +402,7 @@ typedef NS_ENUM(NSInteger, MenuMode) {
         text = [text stringByAppendingFormat:@"\n%@", appCopyright];
         
         NSMutableAttributedString* string = [[NSMutableAttributedString alloc] initWithString:text attributes:attributes];
-        [string addAttribute:NSFontAttributeName value:boldFont range:[text rangeOfString:appDescription]];
-        [string addAttribute:NSForegroundColorAttributeName value:boldColor range:[text rangeOfString:appDescription]];
+        [string addAttributes:boldAttributes range:[text rangeOfString:appDescription]];
         
         [self.text.textStorage setAttributedString:string];
     }
