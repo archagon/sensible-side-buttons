@@ -21,9 +21,20 @@
 
 #import "AppDelegate.h"
 #import "TouchEvents.h"
+#import "MGThemingHelper.h"
 
 static NSMutableDictionary<NSNumber*, NSArray<NSDictionary*>*>* swipeInfo = nil;
 static NSArray* nullArray = nil;
+
+static NSString *ABOUT_ITEM_KEY = @"swp_about_item";
+static NSString *ENABLE_ITEM_KEY = @"swp_enable_item";
+static NSString *MODE_ITEM_KEY = @"swp_mode_item";
+static NSString *SWAP_ITEM_KEY = @"swp_swap_item";
+static NSString *ABOUTTEXT_ITEM_KEY = @"swp_abouttext_item";
+static NSString *DONATE_ITEM_KEY = @"swp_donate_item";
+static NSString *WEBSITE_ITEM_KEY = @"swp_website_item";
+static NSString *ACCESSIBILITY_ITEM_KEY = @"swp_accessibility_item";
+static NSString *QUIT_ITEM_KEY = @"swp_quit_item";
 
 static void SBFFakeSwipe(TLInfoSwipeDirection dir) {
     CGEventRef event1 = tl_CGEventCreateFromGesture((__bridge CFDictionaryRef)(swipeInfo[@(dir)][0]), (__bridge CFArrayRef)nullArray);
@@ -91,7 +102,7 @@ typedef NS_ENUM(NSInteger, MenuMode) {
 
 -(void)setMenuMode:(MenuMode)menuMode {
     _menuMode = menuMode;
-    AboutView* view = (AboutView*)self.statusItem.menu.itemArray[4].view;
+    AboutView* view = (AboutView*) [self menuByIdentifier:ABOUTTEXT_ITEM_KEY].view;
     view.menuMode = menuMode;
     [self refreshSettings];
 }
@@ -131,6 +142,7 @@ typedef NS_ENUM(NSInteger, MenuMode) {
         self.statusItem = [[NSStatusBar systemStatusBar] statusItemWithLength:NSSquareStatusItemLength];
     }
     
+    NSString* appName = [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString*)kCFBundleNameKey];
     // create menu
     {
         NSMenu* menu = [NSMenu new];
@@ -138,43 +150,90 @@ typedef NS_ENUM(NSInteger, MenuMode) {
         menu.autoenablesItems = NO;
         menu.delegate = self;
         
-        NSMenuItem* enabledItem = [[NSMenuItem alloc] initWithTitle:@"Enabled" action:@selector(enabledToggle:) keyEquivalent:@"e"];
+        NSMenuItem* aboutItem = [[NSMenuItem alloc]
+                               initWithTitle:[NSString stringWithFormat:NSLocalizedString(@"About %@", null), appName]
+                               action:@selector(orderFrontStandardAboutPanel:)
+                               keyEquivalent:@""];
+        aboutItem.keyEquivalentModifierMask = NSEventModifierFlagCommand;
+        
+        [aboutItem setIdentifier:ABOUT_ITEM_KEY];
+        
+        [menu addItem:aboutItem];
+        
+        NSMenuItem* enabledItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Enable", null)
+                                                             action:@selector(enabledToggle:)
+                                                      keyEquivalent:NSLocalizedString(@"ENABLE_ABBR", null)];
+
+        [enabledItem setIdentifier:ENABLE_ITEM_KEY];
         [menu addItem:enabledItem];
         
-        NSMenuItem* modeItem = [[NSMenuItem alloc] initWithTitle:@"Trigger on Mouse Down" action:@selector(mouseDownToggle:) keyEquivalent:@""];
+        NSMenuItem* modeItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Trigger on Mouse Down", null)
+                                                          action:@selector(mouseDownToggle:)
+                                                   keyEquivalent:NSLocalizedString(@"TRIGGER_ABBR", null)];
         modeItem.state = NSControlStateValueOn;
-        [menu addItem:modeItem];
         
-        NSMenuItem* swapItem = [[NSMenuItem alloc] initWithTitle:@"Swap Buttons" action:@selector(swapToggle:) keyEquivalent:@""];
+        [modeItem setIdentifier:MODE_ITEM_KEY];
+        [menu addItem:modeItem];
+
+        NSMenuItem* swapItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Swap Buttons", null)
+                                                          action:@selector(swapToggle:)
+                                                   keyEquivalent:NSLocalizedString(@"SWAP_ABBR", null)];
         swapItem.state = NSControlStateValueOff;
+        
+        [swapItem setIdentifier:SWAP_ITEM_KEY];
         [menu addItem:swapItem];
         
-        //[menu addItem:[NSMenuItem separatorItem]];
-        //NSMenuItem* mouseItem = [[NSMenuItem alloc] initWithTitle:@"G403" action:@selector(act:) keyEquivalent:@""];
-        //mouseItem.state = NSControlStateValueOn;
-        //[menu addItem:mouseItem];
+//        [menu addItem:[NSMenuItem separatorItem]];
+//        NSMenuItem* mouseItem = [[NSMenuItem alloc] initWithTitle:@"G403" action:@selector(act:) keyEquivalent:@""];
+//        mouseItem.state = NSControlStateValueOn;
+//
+//        [mouseItem setIdentifier:@"swp_mouse_item"];
+//        [menu addItem:mouseItem];
         
         [menu addItem:[NSMenuItem separatorItem]];
         
         AboutView* text = [[AboutView alloc] initWithFrame:NSMakeRect(0, 0, 320, 100)]; //arbitrary height
-        NSMenuItem* aboutText = [[NSMenuItem alloc] initWithTitle:@"Text" action:NULL keyEquivalent:@""];
-        aboutText.view = text;
-        [menu addItem:aboutText];
+
+        NSMenuItem* aboutTextItem = [[NSMenuItem alloc] initWithTitle:@"Text" action:NULL keyEquivalent:@""];
+        aboutTextItem.view = text;
+        
+        
+        [aboutTextItem setIdentifier:ABOUTTEXT_ITEM_KEY];
+        [menu addItem:aboutTextItem];
         
         [menu addItem:[NSMenuItem separatorItem]];
         
-        NSString* appName = [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString*)kCFBundleNameKey];
-        [menu addItem:[[NSMenuItem alloc] initWithTitle:[NSString stringWithFormat:@"%@ Website", appName] action:@selector(donate:) keyEquivalent:@""]];
+        NSMenuItem* donateItem = [[NSMenuItem alloc] initWithTitle:[NSString stringWithFormat:NSLocalizedString(@"%@ Website", null), appName]
+                                                 action:@selector(donate:)
+                                          keyEquivalent:NSLocalizedString(@"DONATE_ABBR", null)];
+
+        [donateItem setIdentifier:DONATE_ITEM_KEY];
+
+        [menu addItem:donateItem];
+
+        NSMenuItem* websiteItem = [[NSMenuItem alloc] initWithTitle:[NSString stringWithFormat:NSLocalizedString(@"%@ Website", null), appName]
+                                                             action:@selector(website:)
+                                                      keyEquivalent:NSLocalizedString(@"WEBSITE_ABBR", null)];
+
+        [websiteItem setIdentifier:WEBSITE_ITEM_KEY];
+        [menu addItem:websiteItem];
         
-        [menu addItem:[[NSMenuItem alloc] initWithTitle:[NSString stringWithFormat:@"%@ Website", appName] action:@selector(website:) keyEquivalent:@""]];
+        NSMenuItem* accessibilityItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Open Accessibility Whitelist", null)
+                                                                   action:@selector(accessibility:)
+                                                            keyEquivalent:NSLocalizedString(@"ACCESSIBILITY_ABBR", null)];
         
-        [menu addItem:[[NSMenuItem alloc] initWithTitle:@"Open Accessibility Whitelist" action:@selector(accessibility:) keyEquivalent:@""]];
-        
+        [accessibilityItem setIdentifier:ACCESSIBILITY_ITEM_KEY];
+        [menu addItem:accessibilityItem];
+
         [menu addItem:[NSMenuItem separatorItem]];
+
+        NSMenuItem* quitItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Quit", null)
+                                                      action:@selector(quit:)
+                                               keyEquivalent:NSLocalizedString(@"QUIT_ABBR", null)];
+        quitItem.keyEquivalentModifierMask = NSEventModifierFlagCommand;
         
-        NSMenuItem* quit = [[NSMenuItem alloc] initWithTitle:@"Quit" action:@selector(quit:) keyEquivalent:@"q"];
-        quit.keyEquivalentModifierMask = NSEventModifierFlagCommand;
-        [menu addItem:quit];
+        [quitItem setIdentifier:QUIT_ITEM_KEY];
+        [menu addItem:quitItem];
         
         self.statusItem.menu = menu;
     }
@@ -183,6 +242,13 @@ typedef NS_ENUM(NSInteger, MenuMode) {
     
     [self updateMenuMode];
     [self refreshSettings];
+}
+
+-(AboutView *) aboutView {
+    NSMenuItem *aboutTextItem = [self menuByIdentifier:ABOUTTEXT_ITEM_KEY];
+    if (aboutTextItem != NULL)
+        return (AboutView *) aboutTextItem.view;
+    return (AboutView *) NULL;
 }
 
 -(void) updateMenuMode {
@@ -207,42 +273,53 @@ typedef NS_ENUM(NSInteger, MenuMode) {
     }
     
     // QQQ: for testing
-    //self.menuMode = arc4random_uniform(3);
+    self.menuMode = arc4random_uniform(3);
+}
+
+- (NSMenuItem*) menuByIdentifier:(NSString*)identifier {
+    if (self.statusItem != NULL && self.statusItem.menu != NULL) {
+        for (NSMenuItem* menuItem in self.statusItem.menu.itemArray) {
+            if ([[menuItem identifier] isEqualToString:identifier]) {
+                return menuItem;
+            }
+        }
+    }
+    return NULL;
 }
 
 -(void) refreshSettings {
-    self.statusItem.menu.itemArray[0].state = self.tap != NULL && CGEventTapIsEnabled(self.tap);
-    self.statusItem.menu.itemArray[1].state = [[NSUserDefaults standardUserDefaults] boolForKey:@"SBFMouseDown"];
-    self.statusItem.menu.itemArray[2].state = [[NSUserDefaults standardUserDefaults] boolForKey:@"SBFSwapButtons"];
+    [self menuByIdentifier:ENABLE_ITEM_KEY].state = self.tap != NULL && CGEventTapIsEnabled(self.tap);
+    [self menuByIdentifier:MODE_ITEM_KEY].state = [[NSUserDefaults standardUserDefaults] boolForKey:@"SBFMouseDown"];
+    [self menuByIdentifier:SWAP_ITEM_KEY].state = [[NSUserDefaults standardUserDefaults] boolForKey:@"SBFSwapButtons"];
     
     switch (self.menuMode) {
         case MenuModeAccessibility:
-            self.statusItem.menu.itemArray[0].enabled = NO;
-            self.statusItem.menu.itemArray[1].enabled = NO;
-            self.statusItem.menu.itemArray[2].enabled = NO;
-            self.statusItem.menu.itemArray[6].hidden = YES;
-            self.statusItem.menu.itemArray[7].hidden = NO;
-            self.statusItem.menu.itemArray[8].hidden = NO;
+            [self menuByIdentifier:ENABLE_ITEM_KEY].enabled = NO;
+            [self menuByIdentifier:MODE_ITEM_KEY].enabled = NO;
+            [self menuByIdentifier:SWAP_ITEM_KEY].enabled = NO;
+            [self menuByIdentifier:DONATE_ITEM_KEY].hidden = YES;
+            [self menuByIdentifier:WEBSITE_ITEM_KEY].hidden = NO;
+            [self menuByIdentifier:ACCESSIBILITY_ITEM_KEY].hidden = NO;
             break;
         case MenuModeDonation:
-            self.statusItem.menu.itemArray[0].enabled = YES;
-            self.statusItem.menu.itemArray[1].enabled = YES;
-            self.statusItem.menu.itemArray[2].enabled = YES;
-            self.statusItem.menu.itemArray[6].hidden = NO;
-            self.statusItem.menu.itemArray[7].hidden = YES;
-            self.statusItem.menu.itemArray[8].hidden = YES;
+            [self menuByIdentifier:ENABLE_ITEM_KEY].enabled = YES;
+            [self menuByIdentifier:MODE_ITEM_KEY].enabled = YES;
+            [self menuByIdentifier:SWAP_ITEM_KEY].enabled = YES;
+            [self menuByIdentifier:DONATE_ITEM_KEY].hidden = NO;
+            [self menuByIdentifier:WEBSITE_ITEM_KEY].hidden = YES;
+            [self menuByIdentifier:ACCESSIBILITY_ITEM_KEY].hidden = YES;
             break;
         case MenuModeNormal:
-            self.statusItem.menu.itemArray[0].enabled = YES;
-            self.statusItem.menu.itemArray[1].enabled = YES;
-            self.statusItem.menu.itemArray[2].enabled = YES;
-            self.statusItem.menu.itemArray[6].hidden = YES;
-            self.statusItem.menu.itemArray[7].hidden = NO;
-            self.statusItem.menu.itemArray[8].hidden = YES;
+            [self menuByIdentifier:ENABLE_ITEM_KEY].enabled = YES;
+            [self menuByIdentifier:MODE_ITEM_KEY].enabled = YES;
+            [self menuByIdentifier:SWAP_ITEM_KEY].enabled = YES;
+            [self menuByIdentifier:DONATE_ITEM_KEY].hidden = YES;
+            [self menuByIdentifier:WEBSITE_ITEM_KEY].hidden = NO;
+            [self menuByIdentifier:ACCESSIBILITY_ITEM_KEY].hidden = YES;
             break;
     }
     
-    AboutView* view = (AboutView*)self.statusItem.menu.itemArray[4].view;
+    AboutView *view = (AboutView *) [self menuByIdentifier:ABOUTTEXT_ITEM_KEY].view;
     [view layoutSubtreeIfNeeded]; //used to auto-calculate the text view size
     view.frame = NSMakeRect(0, 0, view.bounds.size.width, view.text.frame.size.height);
     
@@ -262,7 +339,8 @@ typedef NS_ENUM(NSInteger, MenuMode) {
             self.tap = CGEventTapCreate(kCGHIDEventTap,
                                         kCGHeadInsertEventTap,
                                         kCGEventTapOptionDefault,
-                                        CGEventMaskBit(kCGEventOtherMouseUp)|CGEventMaskBit(kCGEventOtherMouseDown),
+                                        CGEventMaskBit(kCGEventOtherMouseUp) |
+                                        CGEventMaskBit(kCGEventOtherMouseDown),
                                         &SBFMouseCallback,
                                         NULL);
             
@@ -284,7 +362,10 @@ typedef NS_ENUM(NSInteger, MenuMode) {
         }
     }
     
-    [[NSUserDefaults standardUserDefaults] setBool:self.tap != NULL && CGEventTapIsEnabled(self.tap) forKey:@"SBFWasEnabled"];
+    bool enabled = self.tap != NULL && CGEventTapIsEnabled(self.tap);
+
+    NSLog(@"The functionality will be %s", enabled ? "enabled" : "disabled");
+    [[NSUserDefaults standardUserDefaults] setBool:enabled forKey:@"SBFWasEnabled"];
 }
 
 -(void) enabledToggle:(id)sender {
@@ -303,7 +384,7 @@ typedef NS_ENUM(NSInteger, MenuMode) {
 }
 
 -(void) donate:(id)sender {
-    [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString: @"http://sensible-side-buttons.archagon.net#donations"]];
+    [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString: NSLocalizedString(@"DONATION_WEBSITE", null)]];
     [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"SBFDonated"];
     
     [self updateMenuMode];
@@ -311,7 +392,7 @@ typedef NS_ENUM(NSInteger, MenuMode) {
 }
 
 -(void) website:(id)sender {
-    [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString: @"http://sensible-side-buttons.archagon.net"]];
+    [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString: NSLocalizedString(@"WEBSITE", null)]];
 }
 
 -(void) accessibility:(id)sender {
@@ -333,9 +414,14 @@ typedef NS_ENUM(NSInteger, MenuMode) {
 
 @implementation AboutView
 
+static MGThemingHelper *helper;
+
 -(Boolean) isDarkMode {
-    NSString *osxMode = [[NSUserDefaults standardUserDefaults] stringForKey:@"AppleInterfaceStyle"];
-    return osxMode != nil && [osxMode isEqualToString:@"Dark"];
+    if (helper == NULL) {
+        helper = [MGThemingHelper fromString:[[NSUserDefaults standardUserDefaults] stringForKey:@"AppleInterfaceStyle"]];
+    }
+    
+    return [helper getCurrent] == Dark;
 }
 
 -(CGFloat) margin {
