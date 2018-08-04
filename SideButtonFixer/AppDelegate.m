@@ -273,7 +273,7 @@ typedef NS_ENUM(NSInteger, MenuMode) {
     }
     
     // QQQ: for testing
-    self.menuMode = arc4random_uniform(3);
+    // self.menuMode = arc4random_uniform(3);
 }
 
 - (NSMenuItem*) menuByIdentifier:(NSString*)identifier {
