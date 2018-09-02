@@ -341,7 +341,6 @@ typedef NS_ENUM(NSInteger, MenuMode) {
 -(void)setMenuMode:(MenuMode)menuMode {
     _menuMode = menuMode;
     
-    CGFloat color = 120;
     NSFont* font = [NSFont menuFontOfSize:13];
     
     NSFontDescriptor* boldFontDesc = [NSFontDescriptor fontDescriptorWithFontAttributes:@{
@@ -351,13 +350,32 @@ typedef NS_ENUM(NSInteger, MenuMode) {
     NSFont* boldFont = [NSFont fontWithDescriptor:boldFontDesc size:font.pointSize];
     if (!boldFont) { boldFont = font; }
     
-    CGFloat boldHue = color;
-    NSColor* boldColor = [NSColor colorWithRed:boldHue/255.0 green:boldHue/255.0 blue:160/255.0 alpha:1];
+    // AB: dynamic color component extraction experiments
+    //CGFloat h1, s1, b1, a1, h2, s2, b2, a2;
+    //NSColorSpace* space;
+    //if (@available(macOS 10.13, *)) {
+    //    space = [[NSColor redColor] colorUsingType:NSColorTypeComponentBased].colorSpace;
+    //} else {
+    //    space = [NSColorSpace deviceRGBColorSpace];
+    //}
+    //NSColor* color = [[NSColor systemBlueColor] colorUsingColorSpace:space];
+    //[color getHue:&h1 saturation:&s1 brightness:&b1 alpha:&a1];
+    //color = [[NSColor systemRedColor] colorUsingColorSpace:space];
+    //[color getHue:&h2 saturation:&s2 brightness:&b2 alpha:&a2];
     
-    NSDictionary* attributes = @{
+    //NSColor* regularColor = [NSColor colorWithRed:120/255.0 green:120/255.0 blue:160/255.0 alpha:1];
+    //NSColor* regularColor = [NSColor colorWithHue:h1 saturation:s1 brightness:b1 alpha:a1];
+    NSColor* regularColor = [NSColor secondaryLabelColor];
+    NSColor* alertColor = [NSColor systemRedColor];
+    
+    NSDictionary* regularAttributes = @{
                                  NSFontAttributeName: font,
-                                 NSForegroundColorAttributeName: [NSColor colorWithRed:color/255.0 green:color/255.0 blue:160/255.0 alpha:1]
+                                 NSForegroundColorAttributeName: regularColor
                                  };
+    NSDictionary* alertAttributes = @{
+                                      NSFontAttributeName: font,
+                                      NSForegroundColorAttributeName: alertColor
+                                      };
     
     NSString* appName = [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString*)kCFBundleNameKey];
     NSString* appDescription = [NSString stringWithFormat:@"%@ %@", appName, [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"]];
@@ -366,27 +384,24 @@ typedef NS_ENUM(NSInteger, MenuMode) {
         case MenuModeAccessibility: {
             NSString* text = [NSString stringWithFormat:@"Uh-oh! It looks like %@ is not whitelisted in the Accessibility panel of your Security & Privacy System Preferences. This app needs to be on the Accessibility whitelist in order to process global mouse events. Please open the Accessibility panel below and add the app to the whitelist.\nCopyright © 2018 Alexei Baboulevitch.", appDescription];
             
-            NSMutableAttributedString* string = [[NSMutableAttributedString alloc] initWithString:text attributes:attributes];
+            NSMutableAttributedString* string = [[NSMutableAttributedString alloc] initWithString:text attributes:alertAttributes];
             [string addAttribute:NSFontAttributeName value:boldFont range:[text rangeOfString:appDescription]];
-            [string addAttribute:NSForegroundColorAttributeName value:boldColor range:[text rangeOfString:appDescription]];
             
             [self.text.textStorage setAttributedString:string];
         } break;
         case MenuModeDonation: {
             NSString* text = [NSString stringWithFormat:@"Thanks for using %@!\nIf you find this utility useful, please consider making a purchase through the Amazon affiliate link on the website below. It won't cost you an extra cent! 😊\nCopyright © 2018 Alexei Baboulevitch.", appDescription];
             
-            NSMutableAttributedString* string = [[NSMutableAttributedString alloc] initWithString:text attributes:attributes];
+            NSMutableAttributedString* string = [[NSMutableAttributedString alloc] initWithString:text attributes:regularAttributes];
             [string addAttribute:NSFontAttributeName value:boldFont range:[text rangeOfString:appDescription]];
-            [string addAttribute:NSForegroundColorAttributeName value:boldColor range:[text rangeOfString:appDescription]];
             
             [self.text.textStorage setAttributedString:string];
         } break;
         case MenuModeNormal: {
             NSString* text = [NSString stringWithFormat:@"Thanks for using %@!\nCopyright © 2018 Alexei Baboulevitch.", appDescription];
             
-            NSMutableAttributedString* string = [[NSMutableAttributedString alloc] initWithString:text attributes:attributes];
+            NSMutableAttributedString* string = [[NSMutableAttributedString alloc] initWithString:text attributes:regularAttributes];
             [string addAttribute:NSFontAttributeName value:boldFont range:[text rangeOfString:appDescription]];
-            [string addAttribute:NSForegroundColorAttributeName value:boldColor range:[text rangeOfString:appDescription]];
             
             [self.text.textStorage setAttributedString:string];
         } break;
