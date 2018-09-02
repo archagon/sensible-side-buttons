@@ -190,9 +190,10 @@ typedef NS_ENUM(NSInteger, MenuMode) {
 }
 
 -(void) updateMenuMode:(BOOL)active {
-    //NSDictionary* options = @{ (__bridge id)kAXTrustedCheckOptionPrompt: @(active ? YES : NO) };
-    //BOOL accessibilityEnabled = AXIsProcessTrustedWithOptions((CFDictionaryRef)options);
-    BOOL accessibilityEnabled = YES; //is accessibility even required? seems to work fine without it
+    // TODO: this actually returns YES if SSB is deleted (not disabled) from Accessibility
+    NSDictionary* options = @{ (__bridge id)kAXTrustedCheckOptionPrompt: @(active ? YES : NO) };
+    BOOL accessibilityEnabled = AXIsProcessTrustedWithOptions((CFDictionaryRef)options);
+    //BOOL accessibilityEnabled = YES; //is accessibility even required? seems to work fine without it
     
     if (accessibilityEnabled) {
         if ([[NSUserDefaults standardUserDefaults] boolForKey:@"SBFDonated"]) {
