@@ -2,7 +2,7 @@
 //  AppDelegate.m
 //
 // SensibleSideButtons, a utility that fixes the navigation buttons on third-party mice in macOS
-// Copyright (C) 2017 Alexei Baboulevitch (ssb@archagon.net)
+// Copyright (C) 2018 Alexei Baboulevitch (ssb@archagon.net)
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -363,7 +363,7 @@ typedef NS_ENUM(NSInteger, MenuMode) {
     
     switch (menuMode) {
         case MenuModeAccessibility: {
-            NSString* text = [NSString stringWithFormat:@"Uh-oh! It looks like %@ is not whitelisted in the Accessibility panel of your Security & Privacy System Preferences. This app needs to be on the Accessibility whitelist in order to process global mouse events. (Otherwise, it would have to run as root!) Please open the Accessibility panel below and add the app to the whitelist.\nCopyright © 2017 Alexei Baboulevitch.", appDescription];
+            NSString* text = [NSString stringWithFormat:@"Uh-oh! It looks like %@ is not whitelisted in the Accessibility panel of your Security & Privacy System Preferences. This app needs to be on the Accessibility whitelist in order to process global mouse events. Please open the Accessibility panel below and add the app to the whitelist.\nCopyright © 2018 Alexei Baboulevitch.", appDescription];
             
             NSMutableAttributedString* string = [[NSMutableAttributedString alloc] initWithString:text attributes:attributes];
             [string addAttribute:NSFontAttributeName value:boldFont range:[text rangeOfString:appDescription]];
@@ -372,7 +372,7 @@ typedef NS_ENUM(NSInteger, MenuMode) {
             [self.text.textStorage setAttributedString:string];
         } break;
         case MenuModeDonation: {
-            NSString* text = [NSString stringWithFormat:@"Thanks for using %@!\nIf you find this utility useful, please consider making a purchase through the Amazon affiliate link on the website below. It won't cost you anything while helping fund the development of this and other useful apps! 😊\nCopyright © 2017 Alexei Baboulevitch.", appDescription];
+            NSString* text = [NSString stringWithFormat:@"Thanks for using %@!\nIf you find this utility useful, please consider making a purchase through the Amazon affiliate link on the website below. It won't cost you an extra cent! 😊\nCopyright © 2018 Alexei Baboulevitch.", appDescription];
             
             NSMutableAttributedString* string = [[NSMutableAttributedString alloc] initWithString:text attributes:attributes];
             [string addAttribute:NSFontAttributeName value:boldFont range:[text rangeOfString:appDescription]];
@@ -381,7 +381,7 @@ typedef NS_ENUM(NSInteger, MenuMode) {
             [self.text.textStorage setAttributedString:string];
         } break;
         case MenuModeNormal: {
-            NSString* text = [NSString stringWithFormat:@"Thanks for using %@!\nCopyright © 2017 Alexei Baboulevitch.", appDescription];
+            NSString* text = [NSString stringWithFormat:@"Thanks for using %@!\nCopyright © 2018 Alexei Baboulevitch.", appDescription];
             
             NSMutableAttributedString* string = [[NSMutableAttributedString alloc] initWithString:text attributes:attributes];
             [string addAttribute:NSFontAttributeName value:boldFont range:[text rangeOfString:appDescription]];
