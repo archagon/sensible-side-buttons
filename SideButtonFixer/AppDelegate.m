@@ -114,7 +114,7 @@ typedef NS_ENUM(NSInteger, MenuItem) {
     [self refreshSettings];
 }
 
-// If the application is launched when it's already running show the icon in the menu bar again
+// if the application is launched when it's already running, show the icon in the menu bar again
 -(BOOL) applicationShouldHandleReopen:(NSApplication *)sender hasVisibleWindows:(BOOL)flag {
     if (@available(macOS 10.12, *)) {
         [self.statusItem setVisible:YES];
@@ -440,32 +440,45 @@ typedef NS_ENUM(NSInteger, MenuItem) {
                                       NSFontAttributeName: font,
                                       NSForegroundColorAttributeName: alertColor
                                       };
+    NSDictionary* smallReturnAttributes = @{
+                                            NSFontAttributeName: [NSFont menuFontOfSize:3],
+                                            };
     
     NSString* appName = [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString*)kCFBundleNameKey];
     NSString* appDescription = [NSString stringWithFormat:@"%@ %@", appName, [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"]];
+    NSString* copyright = @"Copyright © 2018 Alexei Baboulevitch.";
     
     switch (menuMode) {
         case MenuModeAccessibility: {
-            NSString* text = [NSString stringWithFormat:@"Uh-oh! It looks like %@ is not whitelisted in the Accessibility panel of your Security & Privacy System Preferences. This app needs to be on the Accessibility whitelist in order to process global mouse events. Please open the Accessibility panel below and add the app to the whitelist.\nCopyright © 2018 Alexei Baboulevitch.", appDescription];
+            NSString* text = [NSString stringWithFormat:@"Uh-oh! It looks like %@ is not whitelisted in the Accessibility panel of your Security & Privacy System Preferences. This app needs to be on the Accessibility whitelist in order to process global mouse events. Please open the Accessibility panel below and add the app to the whitelist.", appDescription];
             
             NSMutableAttributedString* string = [[NSMutableAttributedString alloc] initWithString:text attributes:alertAttributes];
             [string addAttribute:NSFontAttributeName value:boldFont range:[text rangeOfString:appDescription]];
+            [string appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n" attributes:regularAttributes]];
+            [string appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n" attributes:smallReturnAttributes]];
+            [string appendAttributedString:[[NSAttributedString alloc] initWithString:copyright attributes:regularAttributes]];
             
             [self.text.textStorage setAttributedString:string];
         } break;
         case MenuModeDonation: {
-            NSString* text = [NSString stringWithFormat:@"Thanks for using %@!\nIf you find this utility useful, please consider making a purchase through the Amazon affiliate link on the website below. It won't cost you an extra cent! 😊\nCopyright © 2018 Alexei Baboulevitch.", appDescription];
+            NSString* text = [NSString stringWithFormat:@"Thanks for using %@!\nIf you find this utility useful, please consider making a purchase through the Amazon affiliate link on the website below. It won't cost you an extra cent! 😊", appDescription];
             
             NSMutableAttributedString* string = [[NSMutableAttributedString alloc] initWithString:text attributes:regularAttributes];
             [string addAttribute:NSFontAttributeName value:boldFont range:[text rangeOfString:appDescription]];
+            [string appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n" attributes:regularAttributes]];
+            [string appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n" attributes:smallReturnAttributes]];
+            [string appendAttributedString:[[NSAttributedString alloc] initWithString:copyright attributes:regularAttributes]];
             
             [self.text.textStorage setAttributedString:string];
         } break;
         case MenuModeNormal: {
-            NSString* text = [NSString stringWithFormat:@"Thanks for using %@!\nCopyright © 2018 Alexei Baboulevitch.", appDescription];
+            NSString* text = [NSString stringWithFormat:@"Thanks for using %@!", appDescription];
             
             NSMutableAttributedString* string = [[NSMutableAttributedString alloc] initWithString:text attributes:regularAttributes];
             [string addAttribute:NSFontAttributeName value:boldFont range:[text rangeOfString:appDescription]];
+            [string appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n" attributes:regularAttributes]];
+            [string appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n" attributes:smallReturnAttributes]];
+            [string appendAttributedString:[[NSAttributedString alloc] initWithString:copyright attributes:regularAttributes]];
             
             [self.text.textStorage setAttributedString:string];
         } break;
