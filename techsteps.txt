@@ -1,3 +1,5 @@
+Just some release and debugging stuff to jog my memory. -AB
+
 Exporting app:
 
 1. archive

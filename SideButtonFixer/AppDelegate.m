@@ -68,6 +68,24 @@ typedef NS_ENUM(NSInteger, MenuMode) {
     MenuModeNormal
 };
 
+typedef NS_ENUM(NSInteger, MenuItem) {
+    MenuItemEnabled = 0,
+    MenuItemEnabledSeparator,
+    MenuItemTriggerOnMouseDown,
+    MenuItemSwapButtons,
+    MenuItemOptionsSeparator,
+    MenuItemStartupHide,
+    MenuItemStartupHideInfo,
+    MenuItemStartupSeparator,
+    MenuItemAboutText,
+    MenuItemAboutSeparator,
+    MenuItemDonate,
+    MenuItemWebsite,
+    MenuItemAccessibility,
+    MenuItemLinkSeparator,
+    MenuItemQuit
+};
+
 @interface AppDelegate () <NSMenuDelegate>
 @property (nonatomic, retain) NSStatusItem* statusItem;
 @property (nonatomic, assign) CFMachPortRef tap;
@@ -89,11 +107,19 @@ typedef NS_ENUM(NSInteger, MenuMode) {
     nullArray = nil;
 }
 
--(void)setMenuMode:(MenuMode)menuMode {
+-(void) setMenuMode:(MenuMode)menuMode {
     _menuMode = menuMode;
-    AboutView* view = (AboutView*)self.statusItem.menu.itemArray[4].view;
+    AboutView* view = (AboutView*)self.statusItem.menu.itemArray[MenuItemAboutText].view;
     view.menuMode = menuMode;
     [self refreshSettings];
+}
+
+// If the application is launched when it's already running show the icon in the menu bar again
+-(BOOL) applicationShouldHandleReopen:(NSApplication *)sender hasVisibleWindows:(BOOL)flag {
+    if (@available(macOS 10.12, *)) {
+        [self.statusItem setVisible:YES];
+    }
+    return NO;
 }
 
 -(void) applicationDidFinishLaunching:(NSNotification *)aNotification {
@@ -140,41 +166,63 @@ typedef NS_ENUM(NSInteger, MenuMode) {
         
         NSMenuItem* enabledItem = [[NSMenuItem alloc] initWithTitle:@"Enabled" action:@selector(enabledToggle:) keyEquivalent:@"e"];
         [menu addItem:enabledItem];
+        assert(menu.itemArray.count - 1 == MenuItemEnabled);
+        
+        [menu addItem:[NSMenuItem separatorItem]];
+        assert(menu.itemArray.count - 1 == MenuItemEnabledSeparator);
         
         NSMenuItem* modeItem = [[NSMenuItem alloc] initWithTitle:@"Trigger on Mouse Down" action:@selector(mouseDownToggle:) keyEquivalent:@""];
         modeItem.state = NSControlStateValueOn;
         [menu addItem:modeItem];
+        assert(menu.itemArray.count - 1 == MenuItemTriggerOnMouseDown);
         
         NSMenuItem* swapItem = [[NSMenuItem alloc] initWithTitle:@"Swap Buttons" action:@selector(swapToggle:) keyEquivalent:@""];
         swapItem.state = NSControlStateValueOff;
         [menu addItem:swapItem];
-        
-        //[menu addItem:[NSMenuItem separatorItem]];
-        //NSMenuItem* mouseItem = [[NSMenuItem alloc] initWithTitle:@"G403" action:@selector(act:) keyEquivalent:@""];
-        //mouseItem.state = NSControlStateValueOn;
-        //[menu addItem:mouseItem];
+        assert(menu.itemArray.count - 1 == MenuItemSwapButtons);
         
         [menu addItem:[NSMenuItem separatorItem]];
+        assert(menu.itemArray.count - 1 == MenuItemOptionsSeparator);
+        
+        
+        NSMenuItem* hideItem = [[NSMenuItem alloc] initWithTitle:@"Hide Menu Bar Icon" action:@selector(hideMenubarItem:) keyEquivalent:@""];
+        [menu addItem:hideItem];
+        assert(menu.itemArray.count - 1 == MenuItemStartupHide);
+        
+        NSMenuItem* hideInfoItem = [[NSMenuItem alloc] initWithTitle:@"Relaunch application to show again" action:NULL keyEquivalent:@""];
+        [hideInfoItem setEnabled:NO];
+        [menu addItem:hideInfoItem];
+        assert(menu.itemArray.count - 1 == MenuItemStartupHideInfo);
+        
+        [menu addItem:[NSMenuItem separatorItem]];
+        assert(menu.itemArray.count - 1 == MenuItemStartupSeparator);
         
         AboutView* text = [[AboutView alloc] initWithFrame:NSMakeRect(0, 0, 320, 100)]; //arbitrary height
         NSMenuItem* aboutText = [[NSMenuItem alloc] initWithTitle:@"Text" action:NULL keyEquivalent:@""];
         aboutText.view = text;
         [menu addItem:aboutText];
+        assert(menu.itemArray.count - 1 == MenuItemAboutText);
         
         [menu addItem:[NSMenuItem separatorItem]];
+        assert(menu.itemArray.count - 1 == MenuItemAboutSeparator);
         
         NSString* appName = [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString*)kCFBundleNameKey];
         [menu addItem:[[NSMenuItem alloc] initWithTitle:[NSString stringWithFormat:@"%@ Website", appName] action:@selector(donate:) keyEquivalent:@""]];
+        assert(menu.itemArray.count - 1 == MenuItemDonate);
         
         [menu addItem:[[NSMenuItem alloc] initWithTitle:[NSString stringWithFormat:@"%@ Website", appName] action:@selector(website:) keyEquivalent:@""]];
+        assert(menu.itemArray.count - 1 == MenuItemWebsite);
         
         [menu addItem:[[NSMenuItem alloc] initWithTitle:@"Open Accessibility Whitelist" action:@selector(accessibility:) keyEquivalent:@""]];
+        assert(menu.itemArray.count - 1 == MenuItemAccessibility);
         
         [menu addItem:[NSMenuItem separatorItem]];
-        
+        assert(menu.itemArray.count - 1 == MenuItemLinkSeparator);
+
         NSMenuItem* quit = [[NSMenuItem alloc] initWithTitle:@"Quit" action:@selector(quit:) keyEquivalent:@"q"];
         quit.keyEquivalentModifierMask = NSEventModifierFlagCommand;
         [menu addItem:quit];
+        assert(menu.itemArray.count - 1 == MenuItemQuit);
         
         self.statusItem.menu = menu;
     }
@@ -212,40 +260,50 @@ typedef NS_ENUM(NSInteger, MenuMode) {
 }
 
 -(void) refreshSettings {
-    self.statusItem.menu.itemArray[0].state = self.tap != NULL && CGEventTapIsEnabled(self.tap);
-    self.statusItem.menu.itemArray[1].state = [[NSUserDefaults standardUserDefaults] boolForKey:@"SBFMouseDown"];
-    self.statusItem.menu.itemArray[2].state = [[NSUserDefaults standardUserDefaults] boolForKey:@"SBFSwapButtons"];
+    self.statusItem.menu.itemArray[MenuItemEnabled].state = self.tap != NULL && CGEventTapIsEnabled(self.tap);
+    self.statusItem.menu.itemArray[MenuItemTriggerOnMouseDown].state = [[NSUserDefaults standardUserDefaults] boolForKey:@"SBFMouseDown"];
+    self.statusItem.menu.itemArray[MenuItemSwapButtons].state = [[NSUserDefaults standardUserDefaults] boolForKey:@"SBFSwapButtons"];
     
     switch (self.menuMode) {
         case MenuModeAccessibility:
-            self.statusItem.menu.itemArray[0].enabled = NO;
-            self.statusItem.menu.itemArray[1].enabled = NO;
-            self.statusItem.menu.itemArray[2].enabled = NO;
-            self.statusItem.menu.itemArray[6].hidden = YES;
-            self.statusItem.menu.itemArray[7].hidden = NO;
-            self.statusItem.menu.itemArray[8].hidden = NO;
+            self.statusItem.menu.itemArray[MenuItemEnabled].enabled = NO;
+            self.statusItem.menu.itemArray[MenuItemTriggerOnMouseDown].enabled = NO;
+            self.statusItem.menu.itemArray[MenuItemSwapButtons].enabled = NO;
+            self.statusItem.menu.itemArray[MenuItemDonate].hidden = YES;
+            self.statusItem.menu.itemArray[MenuItemWebsite].hidden = NO;
+            self.statusItem.menu.itemArray[MenuItemAccessibility].hidden = NO;
             break;
         case MenuModeDonation:
-            self.statusItem.menu.itemArray[0].enabled = YES;
-            self.statusItem.menu.itemArray[1].enabled = YES;
-            self.statusItem.menu.itemArray[2].enabled = YES;
-            self.statusItem.menu.itemArray[6].hidden = NO;
-            self.statusItem.menu.itemArray[7].hidden = YES;
-            self.statusItem.menu.itemArray[8].hidden = YES;
+            self.statusItem.menu.itemArray[MenuItemEnabled].enabled = YES;
+            self.statusItem.menu.itemArray[MenuItemTriggerOnMouseDown].enabled = YES;
+            self.statusItem.menu.itemArray[MenuItemSwapButtons].enabled = YES;
+            self.statusItem.menu.itemArray[MenuItemDonate].hidden = NO;
+            self.statusItem.menu.itemArray[MenuItemWebsite].hidden = YES;
+            self.statusItem.menu.itemArray[MenuItemAccessibility].hidden = YES;
             break;
         case MenuModeNormal:
-            self.statusItem.menu.itemArray[0].enabled = YES;
-            self.statusItem.menu.itemArray[1].enabled = YES;
-            self.statusItem.menu.itemArray[2].enabled = YES;
-            self.statusItem.menu.itemArray[6].hidden = YES;
-            self.statusItem.menu.itemArray[7].hidden = NO;
-            self.statusItem.menu.itemArray[8].hidden = YES;
+            self.statusItem.menu.itemArray[MenuItemEnabled].enabled = YES;
+            self.statusItem.menu.itemArray[MenuItemTriggerOnMouseDown].enabled = YES;
+            self.statusItem.menu.itemArray[MenuItemSwapButtons].enabled = YES;
+            self.statusItem.menu.itemArray[MenuItemDonate].hidden = YES;
+            self.statusItem.menu.itemArray[MenuItemWebsite].hidden = NO;
+            self.statusItem.menu.itemArray[MenuItemAccessibility].hidden = YES;
             break;
     }
     
-    AboutView* view = (AboutView*)self.statusItem.menu.itemArray[4].view;
+    AboutView* view = (AboutView*)self.statusItem.menu.itemArray[MenuItemAboutText].view;
     [view layoutSubtreeIfNeeded]; //used to auto-calculate the text view size
     view.frame = NSMakeRect(0, 0, view.bounds.size.width, view.text.frame.size.height);
+    
+    // only show the menu item to hide the icon if the API is available
+    if (@available(macOS 10.12, *)) {
+        self.statusItem.menu.itemArray[MenuItemStartupHide].hidden = NO;
+        self.statusItem.menu.itemArray[MenuItemStartupHideInfo].hidden = NO;
+    }
+    else {
+        self.statusItem.menu.itemArray[MenuItemStartupHide].hidden = YES;
+        self.statusItem.menu.itemArray[MenuItemStartupHideInfo].hidden = YES;
+    }
     
     if (self.statusItem.button != nil) {
         if (self.tap != NULL && CGEventTapIsEnabled(self.tap)) {
@@ -320,11 +378,17 @@ typedef NS_ENUM(NSInteger, MenuMode) {
     [self refreshSettings];
 }
 
+-(void) hideMenubarItem:(id)sender {
+    if (@available(macOS 10.12, *)) {
+        [self.statusItem setVisible:NO];
+    }
+}
+
 -(void) quit:(id)sender {
     [NSApp terminate:self];
 }
 
-- (void)menuWillOpen:(NSMenu *)menu {
+- (void) menuWillOpen:(NSMenu*)menu {
     // TODO: theoretically, accessibility can be disabled while the menu is opened, but this is unlikely
     [self updateMenuMode:NO];
     [self refreshSettings];
@@ -338,7 +402,7 @@ typedef NS_ENUM(NSInteger, MenuMode) {
     return 17;
 }
 
--(void)setMenuMode:(MenuMode)menuMode {
+-(void) setMenuMode:(MenuMode)menuMode {
     _menuMode = menuMode;
     
     NSFont* font = [NSFont menuFontOfSize:13];
@@ -410,7 +474,7 @@ typedef NS_ENUM(NSInteger, MenuMode) {
     [self setNeedsLayout:YES];
 }
 
--(instancetype)initWithFrame:(NSRect)frameRect {
+-(instancetype) initWithFrame:(NSRect)frameRect {
     self = [super initWithFrame:frameRect];
     
     if (self) {
@@ -430,7 +494,7 @@ typedef NS_ENUM(NSInteger, MenuMode) {
     return self;
 }
 
--(void)layout {
+-(void) layout {
     [super layout];
     
     CGFloat margin = [self margin];
