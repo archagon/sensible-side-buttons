@@ -1,0 +1,30 @@
+/* 
+  Localizable.strings
+  SwipeSimulator
+
+  Created by Luna on 07/02/18.
+  Copyright © 2018 Alexei Baboulevitch. All rights reserved.
+*/
+
+"MenuModeDonationAboutViewText" = "Grazie per aver usato %@!\
+Se lo trovi utile, considera di effettuare un acquisto tramite il link affiliato Amazon nel link al sito web sottostante. Non ti costerà nulla e contribuirai allo sviluppo di questa e altre app! 😊";
+"MenuModeAccessibilityAboutViewText" = "Uh-oh! Sembra che %@ non sia tra le applicazioni affidabili nel pannello Accessibilità delle preferenze per la Sicurezza e Privacy. Questa app ha bisogno di questi permessi per poter leggere gli eventi globali del mouse. (Altrimenti, puoi avviarla come utente root!) Per cortesia apri il pannello Accessibilità in basso e aggiungi l'app alla lista di applicazioni affidabili.";
+"MenuModeNormalAboutViewText" = "Grazie per aver usato %@!";
+"Enable" = "Abilita";
+"Trigger on Mouse Down" = "Innesca alla pressione del mouse";
+"Swap Buttons" = "Scambia pulsanti";
+"%@ Website" = "Sito web di %@";
+"Quit" = "Esci";
+"About %@" = "Informazioni su %@";
+"Open Accessibility Whitelist" = "Apri pannello Accessibilità";
+
+"ENABLE_ABBR" = "a";
+"TRIGGER_ABBR" = "t";
+"SWAP_ABBR" = "s";
+"DONATE_ABBR" = "d";
+"ACCESSIBILITY_ABBR" = "";
+"QUIT_ABBR" = "q";
+"WEBSITE_ABBR" = "w";
+
+"DONATION_WEBSITE" = "http://sensible-side-buttons.archagon.net#donations";
+"WEBSITE" = "http://sensible-side-buttons.archagon.net";

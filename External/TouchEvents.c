@@ -6,6 +6,7 @@
  *  Copyright 2010 Calf Trail Software, LLC. All rights reserved.
  *
  */
+#include <mach/mach.h>
 
 #include "TouchEvents.h"
 
@@ -49,8 +50,14 @@ const CFStringRef kTLEventKeyMinorRadius = CFSTR("minorRadius");
 static inline IOFixed tl_float2fixed(double f) { return (IOFixed)(f * 65536.0); }
 
 static inline uint64_t tl_uptime() {
+    // static mach_timebase_info_data_t    sTimebaseInfo;
+    // uint64_t time = mach_absolute_time();
+    // if ( sTimebaseInfo.denom == 0 ) {
+    //    (void) mach_timebase_info(&sTimebaseInfo);
+    // }
+    // return time * sTimebaseInfo.numer / sTimebaseInfo.denom;
 	AbsoluteTime uptimeAbs = AbsoluteToNanoseconds(UpTime());
-	return ((uint64_t)uptimeAbs.hi << 32) + uptimeAbs.lo;
+    return ((uint64_t)uptimeAbs.hi << 32) + uptimeAbs.lo;
 }
 
 static inline void setVendorData(IOHIDVendorDefinedEventData* vd, const void* data) {

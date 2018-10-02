@@ -1,0 +1,29 @@
+/* 
+  Localizable.strings
+  SwipeSimulator
+
+  Created by Luna on 07/02/18.
+  Copyright © 2018 Alexei Baboulevitch. All rights reserved.
+*/
+
+"MenuModeDonationAboutViewText" = "Thanks for using %@!\nIf you find this utility useful, please consider making a purchase through the Amazon affiliate link on the website below. It won't cost you anything while helping fund the development of this and other useful apps! 😊";
+"MenuModeAccessibilityAboutViewText" = "Uh-oh! It looks like %@ is not whitelisted in the Accessibility panel of your Security & Privacy System Preferences. This app needs to be on the Accessibility whitelist in order to process global mouse events. (Otherwise, it would have to run as root!) Please open the Accessibility panel below and add the app to the whitelist.";
+"MenuModeNormalAboutViewText" = "Thanks for using %@!";
+"Enable" = "Enable";
+"Trigger on Mouse Down" = "Trigger on Mouse Down";
+"Swap Buttons" = "Swap Buttons";
+"%@ Website" = "%@ Website";
+"Quit" = "Quit";
+"About %@" = "About %@";
+"Open Accessibility Whitelist" = "Open Accessibility Whitelist";
+
+"ENABLE_ABBR" = "e";
+"TRIGGER_ABBR" = "t";
+"SWAP_ABBR" = "s";
+"DONATE_ABBR" = "d";
+"ACCESSIBILITY_ABBR" = "";
+"QUIT_ABBR" = "q";
+"WEBSITE_ABBR" = "w";
+
+"DONATION_WEBSITE" = "http://sensible-side-buttons.archagon.net#donations";
+"WEBSITE" = "http://sensible-side-buttons.archagon.net";
