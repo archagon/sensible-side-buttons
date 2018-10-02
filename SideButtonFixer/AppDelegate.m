@@ -2,7 +2,7 @@
 //  AppDelegate.m
 //
 // SensibleSideButtons, a utility that fixes the navigation buttons on third-party mice in macOS
-// Copyright (C) 2017 Alexei Baboulevitch (ssb@archagon.net)
+// Copyright (C) 2018 Alexei Baboulevitch (ssb@archagon.net)
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -79,6 +79,24 @@ typedef NS_ENUM(NSInteger, MenuMode) {
     MenuModeNormal
 };
 
+typedef NS_ENUM(NSInteger, MenuItem) {
+    MenuItemEnabled = 0,
+    MenuItemEnabledSeparator,
+    MenuItemTriggerOnMouseDown,
+    MenuItemSwapButtons,
+    MenuItemOptionsSeparator,
+    MenuItemStartupHide,
+    MenuItemStartupHideInfo,
+    MenuItemStartupSeparator,
+    MenuItemAboutText,
+    MenuItemAboutSeparator,
+    MenuItemDonate,
+    MenuItemWebsite,
+    MenuItemAccessibility,
+    MenuItemLinkSeparator,
+    MenuItemQuit
+};
+
 @interface AppDelegate () <NSMenuDelegate>
 @property (nonatomic, retain) NSStatusItem* statusItem;
 @property (nonatomic, assign) CFMachPortRef tap;
@@ -100,11 +118,19 @@ typedef NS_ENUM(NSInteger, MenuMode) {
     nullArray = nil;
 }
 
--(void)setMenuMode:(MenuMode)menuMode {
+-(void) setMenuMode:(MenuMode)menuMode {
     _menuMode = menuMode;
     AboutView* view = (AboutView*) [self menuByIdentifier:ABOUTTEXT_ITEM_KEY].view;
     view.menuMode = menuMode;
     [self refreshSettings];
+}
+
+// if the application is launched when it's already running, show the icon in the menu bar again
+-(BOOL) applicationShouldHandleReopen:(NSApplication *)sender hasVisibleWindows:(BOOL)flag {
+    if (@available(macOS 10.12, *)) {
+        [self.statusItem setVisible:YES];
+    }
+    return NO;
 }
 
 -(void) applicationDidFinishLaunching:(NSNotification *)aNotification {
@@ -166,6 +192,10 @@ typedef NS_ENUM(NSInteger, MenuMode) {
 
         [enabledItem setIdentifier:ENABLE_ITEM_KEY];
         [menu addItem:enabledItem];
+        assert(menu.itemArray.count - 1 == MenuItemEnabled);
+        
+        [menu addItem:[NSMenuItem separatorItem]];
+        assert(menu.itemArray.count - 1 == MenuItemEnabledSeparator);
         
         NSMenuItem* modeItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Trigger on Mouse Down", null)
                                                           action:@selector(mouseDownToggle:)
@@ -182,6 +212,15 @@ typedef NS_ENUM(NSInteger, MenuMode) {
         
         [swapItem setIdentifier:SWAP_ITEM_KEY];
         [menu addItem:swapItem];
+        assert(menu.itemArray.count - 1 == MenuItemSwapButtons);
+        
+        [menu addItem:[NSMenuItem separatorItem]];
+        assert(menu.itemArray.count - 1 == MenuItemOptionsSeparator);
+        
+        
+        NSMenuItem* hideItem = [[NSMenuItem alloc] initWithTitle:@"Hide Menu Bar Icon" action:@selector(hideMenubarItem:) keyEquivalent:@""];
+        [menu addItem:hideItem];
+        assert(menu.itemArray.count - 1 == MenuItemStartupHide);
         
 //        [menu addItem:[NSMenuItem separatorItem]];
 //        NSMenuItem* mouseItem = [[NSMenuItem alloc] initWithTitle:@"G403" action:@selector(act:) keyEquivalent:@""];
@@ -191,6 +230,7 @@ typedef NS_ENUM(NSInteger, MenuMode) {
 //        [menu addItem:mouseItem];
         
         [menu addItem:[NSMenuItem separatorItem]];
+        assert(menu.itemArray.count - 1 == MenuItemStartupSeparator);
         
         AboutView* text = [[AboutView alloc] initWithFrame:NSMakeRect(0, 0, 320, 100)]; //arbitrary height
 
@@ -256,9 +296,10 @@ typedef NS_ENUM(NSInteger, MenuMode) {
 }
 
 -(void) updateMenuMode:(BOOL)active {
-    //NSDictionary* options = @{ (__bridge id)kAXTrustedCheckOptionPrompt: @(active ? YES : NO) };
-    //BOOL accessibilityEnabled = AXIsProcessTrustedWithOptions((CFDictionaryRef)options);
-    BOOL accessibilityEnabled = YES; //is accessibility even required? seems to work fine without it
+    // TODO: this actually returns YES if SSB is deleted (not disabled) from Accessibility
+    NSDictionary* options = @{ (__bridge id)kAXTrustedCheckOptionPrompt: @(active ? YES : NO) };
+    BOOL accessibilityEnabled = AXIsProcessTrustedWithOptions((CFDictionaryRef)options);
+    //BOOL accessibilityEnabled = YES; //is accessibility even required? seems to work fine without it
     
     if (accessibilityEnabled) {
         if ([[NSUserDefaults standardUserDefaults] boolForKey:@"SBFDonated"]) {
@@ -322,6 +363,16 @@ typedef NS_ENUM(NSInteger, MenuMode) {
     AboutView *view = (AboutView *) [self menuByIdentifier:ABOUTTEXT_ITEM_KEY].view;
     [view layoutSubtreeIfNeeded]; //used to auto-calculate the text view size
     view.frame = NSMakeRect(0, 0, view.bounds.size.width, view.text.frame.size.height);
+    
+    // only show the menu item to hide the icon if the API is available
+    if (@available(macOS 10.12, *)) {
+        self.statusItem.menu.itemArray[MenuItemStartupHide].hidden = NO;
+        self.statusItem.menu.itemArray[MenuItemStartupHideInfo].hidden = NO;
+    }
+    else {
+        self.statusItem.menu.itemArray[MenuItemStartupHide].hidden = YES;
+        self.statusItem.menu.itemArray[MenuItemStartupHideInfo].hidden = YES;
+    }
     
     if (self.statusItem.button != nil) {
         if (self.tap != NULL && CGEventTapIsEnabled(self.tap)) {
@@ -400,11 +451,17 @@ typedef NS_ENUM(NSInteger, MenuMode) {
     [self refreshSettings];
 }
 
+-(void) hideMenubarItem:(id)sender {
+    if (@available(macOS 10.12, *)) {
+        [self.statusItem setVisible:NO];
+    }
+}
+
 -(void) quit:(id)sender {
     [NSApp terminate:self];
 }
 
-- (void)menuWillOpen:(NSMenu *)menu {
+- (void) menuWillOpen:(NSMenu*)menu {
     // TODO: theoretically, accessibility can be disabled while the menu is opened, but this is unlikely
     [self updateMenuMode:NO];
     [self refreshSettings];
@@ -428,7 +485,7 @@ static MGThemingHelper *helper;
     return 17;
 }
 
--(void)setMenuMode:(MenuMode)menuMode {
+-(void) setMenuMode:(MenuMode)menuMode {
     _menuMode = menuMode;
     
     CGFloat baseColor = [self isDarkMode] ? 200.f : 100.f;
@@ -496,7 +553,7 @@ static MGThemingHelper *helper;
     [self setNeedsLayout:YES];
 }
 
--(instancetype)initWithFrame:(NSRect)frameRect {
+-(instancetype) initWithFrame:(NSRect)frameRect {
     self = [super initWithFrame:frameRect];
     
     if (self) {
@@ -516,7 +573,7 @@ static MGThemingHelper *helper;
     return self;
 }
 
--(void)layout {
+-(void) layout {
     [super layout];
     
     CGFloat margin = [self margin];
