@@ -22,6 +22,9 @@
 #import "AppDelegate.h"
 #import "TouchEvents.h"
 
+#define SIGN(x) (((x) > 0) - ((x) < 0))
+#define SCROLL_LINES 3
+
 static NSMutableDictionary<NSNumber*, NSArray<NSDictionary*>*>* swipeInfo = nil;
 static NSArray* nullArray = nil;
 
@@ -34,6 +37,18 @@ static void SBFFakeSwipe(TLInfoSwipeDirection dir) {
     
     CFRelease(event1);
     CFRelease(event2);
+}
+
+// This logic comes from discrete-scroll (https://github.com/emreyolcu/discrete-scroll),
+// which is MIT-licensed by Emre Yolcu. See LICENSE-discrete-scroll.
+static CGEventRef SBFScrollCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef event, void *refcon) {
+    if (!CGEventGetIntegerValueField(event, kCGScrollWheelEventIsContinuous)) {
+        int64_t delta = CGEventGetIntegerValueField(event, kCGScrollWheelEventPointDeltaAxis1);
+        
+        CGEventSetIntegerValueField(event, kCGScrollWheelEventDeltaAxis1, SIGN(delta) * SCROLL_LINES);
+    }
+    
+    return event;
 }
 
 static CGEventRef SBFMouseCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef event, void *refcon) {
@@ -70,6 +85,7 @@ typedef NS_ENUM(NSInteger, MenuMode) {
 
 typedef NS_ENUM(NSInteger, MenuItem) {
     MenuItemEnabled = 0,
+    MenuItemAccelDisabled,
     MenuItemEnabledSeparator,
     MenuItemTriggerOnMouseDown,
     MenuItemSwapButtons,
@@ -89,6 +105,7 @@ typedef NS_ENUM(NSInteger, MenuItem) {
 @interface AppDelegate () <NSMenuDelegate>
 @property (nonatomic, retain) NSStatusItem* statusItem;
 @property (nonatomic, assign) CFMachPortRef tap;
+@property (nonatomic, assign) CFMachPortRef scrollTap;
 @property (nonatomic, assign) MenuMode menuMode;
 @end
 
@@ -102,6 +119,7 @@ typedef NS_ENUM(NSInteger, MenuItem) {
 
 -(void) dealloc {
     [self startTap:NO];
+    [self startScrollTap:NO];
     
     swipeInfo = nil;
     nullArray = nil;
@@ -125,6 +143,7 @@ typedef NS_ENUM(NSInteger, MenuItem) {
 -(void) applicationDidFinishLaunching:(NSNotification *)aNotification {
     [[NSUserDefaults standardUserDefaults] registerDefaults:@{
                                                               @"SBFWasEnabled": @YES,
+                                                              @"SBFAccelWasDisabled": @NO,
                                                               @"SBFMouseDown": @YES,
                                                               @"SBFDonated": @NO,
                                                               @"SBFSwapButtons": @NO
@@ -167,6 +186,10 @@ typedef NS_ENUM(NSInteger, MenuItem) {
         NSMenuItem* enabledItem = [[NSMenuItem alloc] initWithTitle:@"Enabled" action:@selector(enabledToggle:) keyEquivalent:@"e"];
         [menu addItem:enabledItem];
         assert(menu.itemArray.count - 1 == MenuItemEnabled);
+        
+        NSMenuItem* accelDisabledItem = [[NSMenuItem alloc] initWithTitle:@"Disable Scroll Wheel Acceleration" action:@selector(accelDisabledToggle:) keyEquivalent:@"a"];
+        [menu addItem:accelDisabledItem];
+        assert(menu.itemArray.count - 1 == MenuItemAccelDisabled);
         
         [menu addItem:[NSMenuItem separatorItem]];
         assert(menu.itemArray.count - 1 == MenuItemEnabledSeparator);
@@ -228,6 +251,7 @@ typedef NS_ENUM(NSInteger, MenuItem) {
     }
     
     [self startTap:[[NSUserDefaults standardUserDefaults] boolForKey:@"SBFWasEnabled"]];
+    [self startScrollTap:[[NSUserDefaults standardUserDefaults] boolForKey:@"SBFAccelWasDisabled"]];
     
     [self updateMenuMode];
     [self refreshSettings];
@@ -261,12 +285,14 @@ typedef NS_ENUM(NSInteger, MenuItem) {
 
 -(void) refreshSettings {
     self.statusItem.menu.itemArray[MenuItemEnabled].state = self.tap != NULL && CGEventTapIsEnabled(self.tap);
+    self.statusItem.menu.itemArray[MenuItemAccelDisabled].state = self.scrollTap != NULL && CGEventTapIsEnabled(self.scrollTap);
     self.statusItem.menu.itemArray[MenuItemTriggerOnMouseDown].state = [[NSUserDefaults standardUserDefaults] boolForKey:@"SBFMouseDown"];
     self.statusItem.menu.itemArray[MenuItemSwapButtons].state = [[NSUserDefaults standardUserDefaults] boolForKey:@"SBFSwapButtons"];
     
     switch (self.menuMode) {
         case MenuModeAccessibility:
             self.statusItem.menu.itemArray[MenuItemEnabled].enabled = NO;
+            self.statusItem.menu.itemArray[MenuItemAccelDisabled].enabled = NO;
             self.statusItem.menu.itemArray[MenuItemTriggerOnMouseDown].enabled = NO;
             self.statusItem.menu.itemArray[MenuItemSwapButtons].enabled = NO;
             self.statusItem.menu.itemArray[MenuItemDonate].hidden = YES;
@@ -275,6 +301,7 @@ typedef NS_ENUM(NSInteger, MenuItem) {
             break;
         case MenuModeDonation:
             self.statusItem.menu.itemArray[MenuItemEnabled].enabled = YES;
+            self.statusItem.menu.itemArray[MenuItemAccelDisabled].enabled = YES;
             self.statusItem.menu.itemArray[MenuItemTriggerOnMouseDown].enabled = YES;
             self.statusItem.menu.itemArray[MenuItemSwapButtons].enabled = YES;
             self.statusItem.menu.itemArray[MenuItemDonate].hidden = NO;
@@ -283,6 +310,7 @@ typedef NS_ENUM(NSInteger, MenuItem) {
             break;
         case MenuModeNormal:
             self.statusItem.menu.itemArray[MenuItemEnabled].enabled = YES;
+            self.statusItem.menu.itemArray[MenuItemAccelDisabled].enabled = YES;
             self.statusItem.menu.itemArray[MenuItemTriggerOnMouseDown].enabled = YES;
             self.statusItem.menu.itemArray[MenuItemSwapButtons].enabled = YES;
             self.statusItem.menu.itemArray[MenuItemDonate].hidden = YES;
@@ -315,6 +343,38 @@ typedef NS_ENUM(NSInteger, MenuItem) {
     }
 }
 
+// This logic comes from discrete-scroll (https://github.com/emreyolcu/discrete-scroll),
+// which is MIT-licensed by Emre Yolcu. See LICENSE-discrete-scroll.
+-(void) startScrollTap:(BOOL)start {
+    if (start) {
+        if (self.scrollTap == NULL) {
+            self.scrollTap = CGEventTapCreate(kCGSessionEventTap,
+                                              kCGHeadInsertEventTap,
+                                              kCGEventTapOptionDefault,
+                                              CGEventMaskBit(kCGEventScrollWheel),
+                                              &SBFScrollCallback,
+                                              NULL);
+            if (self.scrollTap != NULL) {
+                CFRunLoopSourceRef runLoopSource = CFMachPortCreateRunLoopSource(NULL, self.scrollTap, 0);
+                CFRunLoopAddSource(CFRunLoopGetCurrent(), runLoopSource, kCFRunLoopCommonModes);
+                CFRelease(runLoopSource);
+                
+                CGEventTapEnable(self.scrollTap, true);
+            }
+        }
+    }
+    else {
+        if (self.scrollTap != NULL) {
+            CGEventTapEnable(self.tap, NO);
+            CFRelease(self.scrollTap);
+            
+            self.scrollTap = NULL;
+        }
+    }
+    
+    [[NSUserDefaults standardUserDefaults] setBool:self.scrollTap != NULL && CGEventTapIsEnabled(self.scrollTap) forKey:@"SBFAccelWasDisabled"];
+}
+
 -(void) startTap:(BOOL)start {
     if (start) {
         if (self.tap == NULL) {
@@ -344,6 +404,11 @@ typedef NS_ENUM(NSInteger, MenuItem) {
     }
     
     [[NSUserDefaults standardUserDefaults] setBool:self.tap != NULL && CGEventTapIsEnabled(self.tap) forKey:@"SBFWasEnabled"];
+}
+
+-(void) accelDisabledToggle:(id)sender {
+    [self startScrollTap:self.scrollTap == NULL];
+    [self refreshSettings];
 }
 
 -(void) enabledToggle:(id)sender {
