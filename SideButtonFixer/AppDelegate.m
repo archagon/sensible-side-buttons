@@ -118,6 +118,7 @@ typedef NS_ENUM(NSInteger, MenuItem) {
 -(BOOL) applicationShouldHandleReopen:(NSApplication *)sender hasVisibleWindows:(BOOL)flag {
     if (@available(macOS 10.12, *)) {
         [self.statusItem setVisible:YES];
+        [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"SBFWasHidden"];
     }
     return NO;
 }
@@ -127,7 +128,8 @@ typedef NS_ENUM(NSInteger, MenuItem) {
                                                               @"SBFWasEnabled": @YES,
                                                               @"SBFMouseDown": @YES,
                                                               @"SBFDonated": @NO,
-                                                              @"SBFSwapButtons": @NO
+                                                              @"SBFSwapButtons": @NO,
+                                                              @"SBFStartHidden": @NO
                                                               }];
     
     // setup globals
@@ -231,6 +233,13 @@ typedef NS_ENUM(NSInteger, MenuItem) {
     
     [self updateMenuMode];
     [self refreshSettings];
+    
+    if (@available(macOS 10.12, *)) {
+        // Start with menu item hidden if it was left that way
+        if ([[NSUserDefaults standardUserDefaults] boolForKey:@"SBFWasHidden"]) {
+            [self.statusItem setVisible:NO];
+        }
+    }
 }
 
 -(void) updateMenuMode {
@@ -381,6 +390,7 @@ typedef NS_ENUM(NSInteger, MenuItem) {
 -(void) hideMenubarItem:(id)sender {
     if (@available(macOS 10.12, *)) {
         [self.statusItem setVisible:NO];
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"SBFWasHidden"];
     }
 }
 
