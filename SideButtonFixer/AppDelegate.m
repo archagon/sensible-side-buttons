@@ -25,6 +25,11 @@
 static NSMutableDictionary<NSNumber*, NSArray<NSDictionary*>*>* swipeInfo = nil;
 static NSArray* nullArray = nil;
 
+// Key codes from: https://web.archive.org/web/20160509091827/http://x86osx.com/bbs/c_data/pds_comment/MacintoshToolboxEssentials.pdf
+// The arrow keys should not depend on the keyboard layout
+const CGKeyCode leftArrow  = 0x7B;
+const CGKeyCode rightArrow = 0x7C;
+
 static void SBFFakeSwipe(TLInfoSwipeDirection dir) {
     CGEventRef event1 = tl_CGEventCreateFromGesture((__bridge CFDictionaryRef)(swipeInfo[@(dir)][0]), (__bridge CFArrayRef)nullArray);
     CGEventRef event2 = tl_CGEventCreateFromGesture((__bridge CFDictionaryRef)(swipeInfo[@(dir)][1]), (__bridge CFArrayRef)nullArray);
@@ -36,23 +41,65 @@ static void SBFFakeSwipe(TLInfoSwipeDirection dir) {
     CFRelease(event2);
 }
 
+static void sendMoveSpace(CGKeyCode dir) {
+    // Essentially we send a control + arrow key here (the arrow key direction is given as argument)
+    CGEventFlags flags = kCGEventFlagMaskControl;
+    CGEventRef ev;
+    CGEventSourceRef source = CGEventSourceCreate (kCGEventSourceStatePrivate);
+    
+    
+    //press down
+    ev = CGEventCreateKeyboardEvent (source, dir, true);
+    CGEventSetFlags(ev,flags | CGEventGetFlags(ev)); //combine flags
+    CGEventPost(kCGHIDEventTap,ev);
+    CFRelease(ev);
+    
+    //press up
+    ev = CGEventCreateKeyboardEvent (source, dir, false);
+    CGEventSetFlags(ev,flags | CGEventGetFlags(ev)); //combine flags
+    CGEventPost(kCGHIDEventTap,ev);
+    CFRelease(ev);
+    
+    CFRelease(source);
+}
+
 static CGEventRef SBFMouseCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef event, void *refcon) {
     int64_t number = CGEventGetIntegerValueField(event, kCGMouseEventButtonNumber);
+    
+    BOOL shift_pressed_state = (CGEventGetFlags(event) & kCGEventFlagMaskShift) != 0;
     BOOL down = (CGEventGetType(event) == kCGEventOtherMouseDown);
     
     BOOL mouseDown = [[NSUserDefaults standardUserDefaults] boolForKey:@"SBFMouseDown"];
     BOOL swapButtons = [[NSUserDefaults standardUserDefaults] boolForKey:@"SBFSwapButtons"];
+    BOOL switchSpacesPref = [[NSUserDefaults standardUserDefaults] boolForKey:@"SBFSwitchSpaces"];
+    BOOL swapBehavior = [[NSUserDefaults standardUserDefaults] boolForKey:@"SBFSwapBehavior"];
+    
+    // We switch spaces if:
+    // 1. switch spaces is selected in the preferences and shift is not selected.
+    // 2. swap behavior is selected and shift is pressed and spaces switching was not the default
+    // Otherwise, we execute a SBFFakeSwipe
+    BOOL switchSpaces = (swapBehavior && shift_pressed_state) ^ switchSpacesPref;
+    
+    NSLog(@"Detected mouse button number: %lld, State: %s, Shift state: %s\n", number, down ? "pressed" : "released", shift_pressed_state ? "pressed" : "released");
     
     if (number == (swapButtons ? 4 : 3)) {
         if ((mouseDown && down) || (!mouseDown && !down)) {
-            SBFFakeSwipe(kTLInfoSwipeLeft);
+            if (switchSpaces) {
+                sendMoveSpace(leftArrow);
+            } else {
+                SBFFakeSwipe(kTLInfoSwipeLeft);
+            }
         }
         
         return NULL;
     }
     else if (number == (swapButtons ? 3 : 4)) {
         if ((mouseDown && down) || (!mouseDown && !down)) {
-            SBFFakeSwipe(kTLInfoSwipeRight);
+            if (switchSpaces) {
+                sendMoveSpace(rightArrow);
+            } else {
+                SBFFakeSwipe(kTLInfoSwipeRight);
+            }
         }
         
         return NULL;
@@ -73,6 +120,8 @@ typedef NS_ENUM(NSInteger, MenuItem) {
     MenuItemEnabledSeparator,
     MenuItemTriggerOnMouseDown,
     MenuItemSwapButtons,
+    MenuItemSwitchSpaces,
+    MenuItemSwapBehavior,
     MenuItemOptionsSeparator,
     MenuItemStartupHide,
     MenuItemStartupHideInfo,
@@ -127,7 +176,9 @@ typedef NS_ENUM(NSInteger, MenuItem) {
                                                               @"SBFWasEnabled": @YES,
                                                               @"SBFMouseDown": @YES,
                                                               @"SBFDonated": @NO,
-                                                              @"SBFSwapButtons": @NO
+                                                              @"SBFSwapButtons": @NO,
+                                                              @"SBFSwitchSpaces": @NO,
+                                                              @"SBFSwapBehavior": @NO,
                                                               }];
     
     // setup globals
@@ -180,6 +231,18 @@ typedef NS_ENUM(NSInteger, MenuItem) {
         swapItem.state = NSControlStateValueOff;
         [menu addItem:swapItem];
         assert(menu.itemArray.count - 1 == MenuItemSwapButtons);
+        
+        NSMenuItem* switchSpaces = [[NSMenuItem alloc] initWithTitle:@"Switch between spaces" action:@selector(switchSpacesToggle:) keyEquivalent:@""];
+        switchSpaces.state = NSControlStateValueOff;
+        [menu addItem:switchSpaces];
+        assert(menu.itemArray.count - 1 == MenuItemSwitchSpaces);
+        
+        NSString* swapBehaviorText = [NSString stringWithFormat:@"Pressing the \"shift\" key inverts the behavior\nbetween back/forth and \"spaces switching\""];
+        NSMenuItem* swapBehavior = [[NSMenuItem alloc] initWithTitle:@"" action:@selector(swapBehaviorToggle:) keyEquivalent:@""];
+        swapBehavior.attributedTitle = [[NSAttributedString alloc] initWithString:swapBehaviorText];
+        swapBehavior.state = NSControlStateValueOff;
+        [menu addItem:swapBehavior];
+        assert(menu.itemArray.count - 1 == MenuItemSwapBehavior);
         
         [menu addItem:[NSMenuItem separatorItem]];
         assert(menu.itemArray.count - 1 == MenuItemOptionsSeparator);
@@ -263,12 +326,16 @@ typedef NS_ENUM(NSInteger, MenuItem) {
     self.statusItem.menu.itemArray[MenuItemEnabled].state = self.tap != NULL && CGEventTapIsEnabled(self.tap);
     self.statusItem.menu.itemArray[MenuItemTriggerOnMouseDown].state = [[NSUserDefaults standardUserDefaults] boolForKey:@"SBFMouseDown"];
     self.statusItem.menu.itemArray[MenuItemSwapButtons].state = [[NSUserDefaults standardUserDefaults] boolForKey:@"SBFSwapButtons"];
-    
+    self.statusItem.menu.itemArray[MenuItemSwitchSpaces].state = [[NSUserDefaults standardUserDefaults] boolForKey:@"SBFSwitchSpaces"];
+    self.statusItem.menu.itemArray[MenuItemSwapBehavior].state = [[NSUserDefaults standardUserDefaults] boolForKey:@"SBFSwapBehavior"];
+
     switch (self.menuMode) {
         case MenuModeAccessibility:
             self.statusItem.menu.itemArray[MenuItemEnabled].enabled = NO;
             self.statusItem.menu.itemArray[MenuItemTriggerOnMouseDown].enabled = NO;
             self.statusItem.menu.itemArray[MenuItemSwapButtons].enabled = NO;
+            self.statusItem.menu.itemArray[MenuItemSwitchSpaces].enabled = NO;
+            self.statusItem.menu.itemArray[MenuItemSwapBehavior].enabled = NO;
             self.statusItem.menu.itemArray[MenuItemDonate].hidden = YES;
             self.statusItem.menu.itemArray[MenuItemWebsite].hidden = NO;
             self.statusItem.menu.itemArray[MenuItemAccessibility].hidden = NO;
@@ -277,6 +344,8 @@ typedef NS_ENUM(NSInteger, MenuItem) {
             self.statusItem.menu.itemArray[MenuItemEnabled].enabled = YES;
             self.statusItem.menu.itemArray[MenuItemTriggerOnMouseDown].enabled = YES;
             self.statusItem.menu.itemArray[MenuItemSwapButtons].enabled = YES;
+            self.statusItem.menu.itemArray[MenuItemSwitchSpaces].enabled = YES;
+            self.statusItem.menu.itemArray[MenuItemSwapBehavior].enabled = YES;
             self.statusItem.menu.itemArray[MenuItemDonate].hidden = NO;
             self.statusItem.menu.itemArray[MenuItemWebsite].hidden = YES;
             self.statusItem.menu.itemArray[MenuItemAccessibility].hidden = YES;
@@ -285,6 +354,8 @@ typedef NS_ENUM(NSInteger, MenuItem) {
             self.statusItem.menu.itemArray[MenuItemEnabled].enabled = YES;
             self.statusItem.menu.itemArray[MenuItemTriggerOnMouseDown].enabled = YES;
             self.statusItem.menu.itemArray[MenuItemSwapButtons].enabled = YES;
+            self.statusItem.menu.itemArray[MenuItemSwitchSpaces].enabled = YES;
+            self.statusItem.menu.itemArray[MenuItemSwapBehavior].enabled = YES;
             self.statusItem.menu.itemArray[MenuItemDonate].hidden = YES;
             self.statusItem.menu.itemArray[MenuItemWebsite].hidden = NO;
             self.statusItem.menu.itemArray[MenuItemAccessibility].hidden = YES;
@@ -358,6 +429,16 @@ typedef NS_ENUM(NSInteger, MenuItem) {
 
 -(void) swapToggle:(id)sender {
     [[NSUserDefaults standardUserDefaults] setBool:![[NSUserDefaults standardUserDefaults] boolForKey:@"SBFSwapButtons"] forKey:@"SBFSwapButtons"];
+    [self refreshSettings];
+}
+
+-(void) switchSpacesToggle:(id)sender {
+    [[NSUserDefaults standardUserDefaults] setBool:![[NSUserDefaults standardUserDefaults] boolForKey:@"SBFSwitchSpaces"] forKey:@"SBFSwitchSpaces"];
+    [self refreshSettings];
+}
+
+-(void) swapBehaviorToggle:(id)sender {
+    [[NSUserDefaults standardUserDefaults] setBool:![[NSUserDefaults standardUserDefaults] boolForKey:@"SBFSwapBehavior"] forKey:@"SBFSwapBehavior"];
     [self refreshSettings];
 }
 
