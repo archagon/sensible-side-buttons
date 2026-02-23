@@ -74,6 +74,7 @@ typedef NS_ENUM(NSInteger, MenuItem) {
     MenuItemTriggerOnMouseDown,
     MenuItemSwapButtons,
     MenuItemOptionsSeparator,
+    MenuItemStartAtLogin,
     MenuItemStartupHide,
     MenuItemStartupHideInfo,
     MenuItemStartupSeparator,
@@ -183,8 +184,11 @@ typedef NS_ENUM(NSInteger, MenuItem) {
         
         [menu addItem:[NSMenuItem separatorItem]];
         assert(menu.itemArray.count - 1 == MenuItemOptionsSeparator);
-        
-        
+
+        NSMenuItem* startAtLoginItem = [[NSMenuItem alloc] initWithTitle:@"Start at Login" action:@selector(startAtLoginToggle:) keyEquivalent:@""];
+        [menu addItem:startAtLoginItem];
+        assert(menu.itemArray.count - 1 == MenuItemStartAtLogin);
+
         NSMenuItem* hideItem = [[NSMenuItem alloc] initWithTitle:@"Hide Menu Bar Icon" action:@selector(hideMenubarItem:) keyEquivalent:@""];
         [menu addItem:hideItem];
         assert(menu.itemArray.count - 1 == MenuItemStartupHide);
@@ -263,6 +267,8 @@ typedef NS_ENUM(NSInteger, MenuItem) {
     self.statusItem.menu.itemArray[MenuItemEnabled].state = self.tap != NULL && CGEventTapIsEnabled(self.tap);
     self.statusItem.menu.itemArray[MenuItemTriggerOnMouseDown].state = [[NSUserDefaults standardUserDefaults] boolForKey:@"SBFMouseDown"];
     self.statusItem.menu.itemArray[MenuItemSwapButtons].state = [[NSUserDefaults standardUserDefaults] boolForKey:@"SBFSwapButtons"];
+    self.statusItem.menu.itemArray[MenuItemStartAtLogin].state =
+        [self isStartAtLoginEnabled] ? NSControlStateValueOn : NSControlStateValueOff;
     
     switch (self.menuMode) {
         case MenuModeAccessibility:
@@ -375,6 +381,37 @@ typedef NS_ENUM(NSInteger, MenuItem) {
 
 -(void) accessibility:(id)sender {
     [self updateMenuMode];
+    [self refreshSettings];
+}
+
+-(NSString*) launchAgentPlistPath {
+    NSString* bundleId = [[NSBundle mainBundle] bundleIdentifier];
+    NSString* launchAgentsDir = [NSHomeDirectory() stringByAppendingPathComponent:@"Library/LaunchAgents"];
+    return [launchAgentsDir stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.plist", bundleId]];
+}
+
+-(BOOL) isStartAtLoginEnabled {
+    return [[NSFileManager defaultManager] fileExistsAtPath:[self launchAgentPlistPath]];
+}
+
+-(void) setStartAtLogin:(BOOL)enabled {
+    NSString* plistPath = [self launchAgentPlistPath];
+    if (enabled) {
+        NSDictionary* plist = @{
+            @"Label":     [[NSBundle mainBundle] bundleIdentifier],
+            @"Program":   [[NSBundle mainBundle] executablePath],
+            @"RunAtLoad": @YES
+        };
+        [[NSFileManager defaultManager] createDirectoryAtPath:[plistPath stringByDeletingLastPathComponent]
+                                  withIntermediateDirectories:YES attributes:nil error:nil];
+        [plist writeToFile:plistPath atomically:YES];
+    } else {
+        [[NSFileManager defaultManager] removeItemAtPath:plistPath error:nil];
+    }
+}
+
+-(void) startAtLoginToggle:(id)sender {
+    [self setStartAtLogin:![self isStartAtLoginEnabled]];
     [self refreshSettings];
 }
 
