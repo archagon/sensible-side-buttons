@@ -1,5 +1,5 @@
 //
-//  main.m
+//  SensibleSideButtons-Bridging-Header.h
 //
 // SensibleSideButtons, a utility that fixes the navigation buttons on third-party mice in macOS
 // Copyright (C) 2018 Alexei Baboulevitch (ssb@archagon.net)
@@ -19,8 +19,4 @@
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 //
 
-#import <Cocoa/Cocoa.h>
-
-int main(int argc, const char * argv[]) {
-    return NSApplicationMain(argc, argv);
-}
+#import "TouchEvents.h"

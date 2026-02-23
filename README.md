@@ -4,11 +4,6 @@ macOS mostly ignores the M4/M5 mouse buttons, commonly used for navigation. Thir
 
 Extensive information on this tweak can be found here: http://sensible-side-buttons.archagon.net
 
-To ensure SensibleSideButtons opens whenever you start your computer:
+To ensure SensibleSideButtons opens whenever you start your computer, click **Start at Login** in the app's menu bar menu.
 
-1. Go to System Preferences
-1. Click Users & Groups
-1. Click your username in the left panel
-1. Click Login Items at the top
-1. Click the plus button at the bottom
-1. Go to wherever you put the app (probably your Applications folder) and double-click it
+**Requires macOS 10.10 or later.**

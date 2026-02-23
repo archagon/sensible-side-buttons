@@ -1,5 +1,5 @@
 //
-//  AppDelegate.h
+//  main.swift
 //
 // SensibleSideButtons, a utility that fixes the navigation buttons on third-party mice in macOS
 // Copyright (C) 2018 Alexei Baboulevitch (ssb@archagon.net)
@@ -19,7 +19,11 @@
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 //
 
-#import <Cocoa/Cocoa.h>
+import Cocoa
 
-@interface AppDelegate : NSObject <NSApplicationDelegate>
-@end
+// Explicitly create the delegate so it's guaranteed to be set even if the
+// storyboard can't resolve the Swift class by name at runtime.
+let _delegate = AppDelegate()
+NSApplication.shared.delegate = _delegate
+
+NSApplicationMain(CommandLine.argc, CommandLine.unsafeArgv)
