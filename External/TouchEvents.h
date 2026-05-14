@@ -68,4 +68,4 @@ extern const CFStringRef kTLEventKeyMajorRadius;
 extern const CFStringRef kTLEventKeyMinorRadius;
 
 
-CGEventRef tl_CGEventCreateFromGesture(CFDictionaryRef info, CFArrayRef touches);
+CGEventRef _Nullable CF_RETURNS_RETAINED tl_CGEventCreateFromGesture(CFDictionaryRef info, CFArrayRef touches);

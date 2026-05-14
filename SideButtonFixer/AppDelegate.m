@@ -22,39 +22,63 @@
 #import "AppDelegate.h"
 #import "TouchEvents.h"
 
-static NSMutableDictionary<NSNumber*, NSArray<NSDictionary*>*>* swipeInfo = nil;
-static NSArray* nullArray = nil;
+// #9: Immutable gesture info built once at launch
+static NSDictionary<NSNumber*, NSArray<NSDictionary*>*>* swipeInfo = nil;
+static NSArray* emptyTouches = nil;
 
-static void SBFFakeSwipe(TLInfoSwipeDirection dir) {
-    CGEventRef event1 = tl_CGEventCreateFromGesture((__bridge CFDictionaryRef)(swipeInfo[@(dir)][0]), (__bridge CFArrayRef)nullArray);
-    CGEventRef event2 = tl_CGEventCreateFromGesture((__bridge CFDictionaryRef)(swipeInfo[@(dir)][1]), (__bridge CFArrayRef)nullArray);
-    
+// #2: Cached preferences — updated only on toggle, not on every event
+static BOOL cachedMouseDown = YES;
+static BOOL cachedSwapButtons = NO;
+
+static BOOL SBFFakeSwipe(TLInfoSwipeDirection dir) {
+    NSArray<NSDictionary*>* info = swipeInfo[@(dir)];
+    if (!info) return NO;
+
+    CGEventRef event1 = tl_CGEventCreateFromGesture((__bridge CFDictionaryRef)(info[0]), (__bridge CFArrayRef)emptyTouches);
+    CGEventRef event2 = tl_CGEventCreateFromGesture((__bridge CFDictionaryRef)(info[1]), (__bridge CFArrayRef)emptyTouches);
+
+    // #1: NULL checks — gesture synthesis can fail on incompatible macOS versions
+    if (!event1 || !event2) {
+        if (event1) CFRelease(event1);
+        if (event2) CFRelease(event2);
+        return NO;
+    }
+
     CGEventPost(kCGHIDEventTap, event1);
     CGEventPost(kCGHIDEventTap, event2);
-    
+
     CFRelease(event1);
     CFRelease(event2);
+    return YES;
 }
 
 static CGEventRef SBFMouseCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef event, void *refcon) {
+    // #3: If the tap was disabled by the OS (timeout), re-enable it
+    if (type == kCGEventTapDisabledByTimeout || type == kCGEventTapDisabledByUserInput) {
+        AppDelegate* delegate = (__bridge AppDelegate*)refcon;
+        if (delegate.tap) CGEventTapEnable(delegate.tap, true);
+        return event;
+    }
+
     int64_t number = CGEventGetIntegerValueField(event, kCGMouseEventButtonNumber);
     BOOL down = (CGEventGetType(event) == kCGEventOtherMouseDown);
-    
-    BOOL mouseDown = [[NSUserDefaults standardUserDefaults] boolForKey:@"SBFMouseDown"];
-    BOOL swapButtons = [[NSUserDefaults standardUserDefaults] boolForKey:@"SBFSwapButtons"];
-    
-    if (number == (swapButtons ? 4 : 3)) {
-        if ((mouseDown && down) || (!mouseDown && !down)) {
-            SBFFakeSwipe(kTLInfoSwipeLeft);
+
+    // #2: Use cached values instead of hitting NSUserDefaults on every event
+    if (number == (cachedSwapButtons ? 4 : 3)) {
+        if ((cachedMouseDown && down) || (!cachedMouseDown && !down)) {
+            if (!SBFFakeSwipe(kTLInfoSwipeLeft)) {
+                // #3: Gesture synthesis failed — pass event through instead of swallowing
+                return event;
+            }
         }
-        
         return NULL;
     }
-    else if (number == (swapButtons ? 3 : 4)) {
-        if ((mouseDown && down) || (!mouseDown && !down)) {
-            SBFFakeSwipe(kTLInfoSwipeRight);
+    else if (number == (cachedSwapButtons ? 3 : 4)) {
+        if ((cachedMouseDown && down) || (!cachedMouseDown && !down)) {
+            if (!SBFFakeSwipe(kTLInfoSwipeRight)) {
+                return event;
+            }
         }
-        
         return NULL;
     }
     else {
@@ -88,8 +112,8 @@ typedef NS_ENUM(NSInteger, MenuItem) {
 
 @interface AppDelegate () <NSMenuDelegate>
 @property (nonatomic, retain) NSStatusItem* statusItem;
-@property (nonatomic, assign) CFMachPortRef tap;
 @property (nonatomic, assign) MenuMode menuMode;
+@property (nonatomic, retain) NSTimer* tccTimer; // #11: periodic TCC check
 @end
 
 @interface AboutView: NSView
@@ -101,10 +125,11 @@ typedef NS_ENUM(NSInteger, MenuItem) {
 @implementation AppDelegate
 
 -(void) dealloc {
+    [self.tccTimer invalidate];
     [self startTap:NO];
-    
+
     swipeInfo = nil;
-    nullArray = nil;
+    emptyTouches = nil;
 }
 
 -(void) setMenuMode:(MenuMode)menuMode {
@@ -130,26 +155,33 @@ typedef NS_ENUM(NSInteger, MenuItem) {
                                                               @"SBFSwapButtons": @NO
                                                               }];
     
-    // setup globals
+    // #9: setup immutable gesture info
     {
-        swipeInfo = [NSMutableDictionary dictionary];
-        
+        NSMutableDictionary* info = [NSMutableDictionary dictionary];
+
         for (NSNumber* direction in @[ @(kTLInfoSwipeUp), @(kTLInfoSwipeDown), @(kTLInfoSwipeLeft), @(kTLInfoSwipeRight) ]) {
             NSDictionary* swipeInfo1 = [NSDictionary dictionaryWithObjectsAndKeys:
                                         @(kTLInfoSubtypeSwipe), kTLInfoKeyGestureSubtype,
                                         @(1), kTLInfoKeyGesturePhase,
                                         nil];
-            
+
             NSDictionary* swipeInfo2 = [NSDictionary dictionaryWithObjectsAndKeys:
                                         @(kTLInfoSubtypeSwipe), kTLInfoKeyGestureSubtype,
                                         direction, kTLInfoKeySwipeDirection,
                                         @(4), kTLInfoKeyGesturePhase,
                                         nil];
-            
-            swipeInfo[direction] = @[ swipeInfo1, swipeInfo2 ];
+
+            info[direction] = @[ swipeInfo1, swipeInfo2 ];
         }
-        
-        nullArray = @[];
+
+        swipeInfo = [info copy]; // immutable copy
+        emptyTouches = @[];
+    }
+
+    // #2: Initialize cached preferences
+    {
+        cachedMouseDown = [[NSUserDefaults standardUserDefaults] boolForKey:@"SBFMouseDown"];
+        cachedSwapButtons = [[NSUserDefaults standardUserDefaults] boolForKey:@"SBFSwapButtons"];
     }
     
     // create status bar item
@@ -228,7 +260,10 @@ typedef NS_ENUM(NSInteger, MenuItem) {
     }
     
     [self startTap:[[NSUserDefaults standardUserDefaults] boolForKey:@"SBFWasEnabled"]];
-    
+
+    // #11: Periodic TCC check — disable tap gracefully if permission revoked
+    self.tccTimer = [NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(checkTCCPermission) userInfo:nil repeats:YES];
+
     [self updateMenuMode];
     [self refreshSettings];
 }
@@ -323,13 +358,13 @@ typedef NS_ENUM(NSInteger, MenuItem) {
                                         kCGEventTapOptionDefault,
                                         CGEventMaskBit(kCGEventOtherMouseUp)|CGEventMaskBit(kCGEventOtherMouseDown),
                                         &SBFMouseCallback,
-                                        NULL);
-            
+                                        (__bridge void*)self);
+
             if (self.tap != NULL) {
                 CFRunLoopSourceRef runLoopSource = CFMachPortCreateRunLoopSource(NULL, self.tap, 0);
                 CFRunLoopAddSource(CFRunLoopGetCurrent(), runLoopSource, kCFRunLoopCommonModes);
                 CFRelease(runLoopSource);
-                
+
                 CGEventTapEnable(self.tap, true);
             }
         }
@@ -338,11 +373,11 @@ typedef NS_ENUM(NSInteger, MenuItem) {
         if (self.tap != NULL) {
             CGEventTapEnable(self.tap, NO);
             CFRelease(self.tap);
-            
+
             self.tap = NULL;
         }
     }
-    
+
     [[NSUserDefaults standardUserDefaults] setBool:self.tap != NULL && CGEventTapIsEnabled(self.tap) forKey:@"SBFWasEnabled"];
 }
 
@@ -352,12 +387,16 @@ typedef NS_ENUM(NSInteger, MenuItem) {
 }
 
 -(void) mouseDownToggle:(id)sender {
-    [[NSUserDefaults standardUserDefaults] setBool:![[NSUserDefaults standardUserDefaults] boolForKey:@"SBFMouseDown"] forKey:@"SBFMouseDown"];
+    BOOL newVal = ![[NSUserDefaults standardUserDefaults] boolForKey:@"SBFMouseDown"];
+    [[NSUserDefaults standardUserDefaults] setBool:newVal forKey:@"SBFMouseDown"];
+    cachedMouseDown = newVal; // #2: sync cache
     [self refreshSettings];
 }
 
 -(void) swapToggle:(id)sender {
-    [[NSUserDefaults standardUserDefaults] setBool:![[NSUserDefaults standardUserDefaults] boolForKey:@"SBFSwapButtons"] forKey:@"SBFSwapButtons"];
+    BOOL newVal = ![[NSUserDefaults standardUserDefaults] boolForKey:@"SBFSwapButtons"];
+    [[NSUserDefaults standardUserDefaults] setBool:newVal forKey:@"SBFSwapButtons"];
+    cachedSwapButtons = newVal; // #2: sync cache
     [self refreshSettings];
 }
 
@@ -392,6 +431,16 @@ typedef NS_ENUM(NSInteger, MenuItem) {
     // TODO: theoretically, accessibility can be disabled while the menu is opened, but this is unlikely
     [self updateMenuMode:NO];
     [self refreshSettings];
+}
+
+// #11: Periodic TCC permission check — disable tap gracefully if revoked
+-(void) checkTCCPermission {
+    BOOL trusted = AXIsProcessTrusted();
+    if (!trusted && self.tap != NULL) {
+        [self startTap:NO];
+        [self updateMenuMode];
+        [self refreshSettings];
+    }
 }
 
 @end

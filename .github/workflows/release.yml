@@ -1,0 +1,50 @@
+name: Build and Release
+
+on:
+  push:
+    branches: [master]
+
+permissions:
+  contents: write
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  build:
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build universal binary
+        run: |
+          xcodebuild \
+            -project SwipeSimulator.xcodeproj \
+            -target SensibleSideButtonsSwift \
+            -configuration Release \
+            -arch arm64 -arch x86_64 \
+            SYMROOT=build \
+            CODE_SIGN_IDENTITY="-" \
+            CODE_SIGNING_REQUIRED=NO \
+            ENABLE_HARDENED_RUNTIME=YES \
+            DEVELOPMENT_TEAM="" \
+            PRODUCT_BUNDLE_IDENTIFIER="com.santoru.sensible-side-buttons"
+
+      - name: Get version
+        id: version
+        run: |
+          VERSION=$(/usr/libexec/PlistBuddy -c "Print CFBundleShortVersionString" build/Release/SensibleSideButtons.app/Contents/Info.plist)
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Zip app bundle
+        run: |
+          cd build/Release
+          zip -r ../../SensibleSideButtons.zip SensibleSideButtons.app
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.version.outputs.version }}
+          name: SensibleSideButtons v${{ steps.version.outputs.version }}
+          files: SensibleSideButtons.zip
+          generate_release_notes: true

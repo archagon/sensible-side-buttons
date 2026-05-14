@@ -1,1 +1,13 @@
+# Build output
+build/
+DerivedData/
 
+# Xcode user data
+xcuserdata/
+*.xcworkspace/xcuserdata/
+
+# macOS
+.DS_Store
+
+# Dev scratchpad
+techsteps.txt

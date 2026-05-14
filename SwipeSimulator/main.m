@@ -43,13 +43,18 @@ int main(int argc, const char * argv[]) {
         
         CGEventRef event1 = tl_CGEventCreateFromGesture((__bridge CFDictionaryRef)(swipeInfo1), (__bridge CFArrayRef)@[]);
         CGEventRef event2 = tl_CGEventCreateFromGesture((__bridge CFDictionaryRef)(swipeInfo2), (__bridge CFArrayRef)@[]);
-        
-        CFRetain(event1);
-        CFRetain(event2);
-        
+
+        // #1: NULL checks
+        if (!event1 || !event2) {
+            if (event1) CFRelease(event1);
+            if (event2) CFRelease(event2);
+            NSLog(@"failed to create gesture events");
+            return 1;
+        }
+
         CGEventPost(kCGHIDEventTap, event1);
         CGEventPost(kCGHIDEventTap, event2);
-        
+
         CFRelease(event1);
         CFRelease(event2);
         
