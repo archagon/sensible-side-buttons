@@ -2,7 +2,7 @@
 //  main.m
 //
 // SensibleSideButtons, a utility that fixes the navigation buttons on third-party mice in macOS
-// Copyright (C) 2018 Alexei Baboulevitch (ssb@archagon.net)
+// Copyright (C) 2026 Alexei Baboulevitch (ssb@archagon.net)
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -59,7 +59,7 @@ int main(int argc, const char * argv[]) {
         //usleep(1000000);
         usleep(1000000/128);
         
-        //NSLog(@"done");
+        NSLog(@"done");
     }
     return 0;
 }

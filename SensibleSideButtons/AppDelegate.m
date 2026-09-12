@@ -2,7 +2,7 @@
 //  AppDelegate.m
 //
 // SensibleSideButtons, a utility that fixes the navigation buttons on third-party mice in macOS
-// Copyright (C) 2018 Alexei Baboulevitch (ssb@archagon.net)
+// Copyright (C) 2026 Alexei Baboulevitch (ssb@archagon.net)
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -446,7 +446,7 @@ typedef NS_ENUM(NSInteger, MenuItem) {
     
     NSString* appName = [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString*)kCFBundleNameKey];
     NSString* appDescription = [NSString stringWithFormat:@"%@ %@", appName, [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"]];
-    NSString* copyright = @"Copyright © 2018 Alexei Baboulevitch.";
+    NSString* copyright = @"Copyright © 2026 Alexei Baboulevitch.";
     
     switch (menuMode) {
         case MenuModeAccessibility: {
