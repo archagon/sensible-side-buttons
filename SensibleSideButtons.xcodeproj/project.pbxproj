@@ -82,7 +82,7 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		4EC7C3B61EE711B400C9F725 /* SideButtonFixer */ = {
+		4EC7C3B61EE711B400C9F725 /* SensibleSideButtons */ = {
 			isa = PBXGroup;
 			children = (
 				4EC7C3B71EE711B400C9F725 /* AppDelegate.h */,
@@ -93,14 +93,14 @@
 				4EF1B39F1EE71D690075438A /* Main.storyboard */,
 				4EC7C3C51EE711B400C9F725 /* SideButtonFixer.entitlements */,
 			);
-			path = SideButtonFixer;
+			path = SensibleSideButtons;
 			sourceTree = "<group>";
 		};
 		4ECC168D1EE54D3D0062AC72 = {
 			isa = PBXGroup;
 			children = (
 				4ECC16981EE54D3D0062AC72 /* SwipeSimulator */,
-				4EC7C3B61EE711B400C9F725 /* SideButtonFixer */,
+				4EC7C3B61EE711B400C9F725 /* SensibleSideButtons */,
 				4ECC16A01EE54D790062AC72 /* External */,
 				4ECC16971EE54D3D0062AC72 /* Products */,
 			);
@@ -218,7 +218,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 4ECC16911EE54D3D0062AC72 /* Build configuration list for PBXProject "SwipeSimulator" */;
+			buildConfigurationList = 4ECC16911EE54D3D0062AC72 /* Build configuration list for PBXProject "SensibleSideButtons" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -306,6 +306,7 @@
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 100;
 				DEVELOPMENT_TEAM = R4MX2B96J2;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -313,9 +314,11 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = SideButtonFixer/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = SensibleSideButtons;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				MARKETING_VERSION = 1.0.7;
 				PRODUCT_BUNDLE_IDENTIFIER = "net.archagon.sensible-side-buttons";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -335,12 +338,15 @@
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 100;
 				DEVELOPMENT_TEAM = R4MX2B96J2;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = SideButtonFixer/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = SensibleSideButtons;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				MARKETING_VERSION = 1.0.7;
 				PRODUCT_BUNDLE_IDENTIFIER = "net.archagon.sensible-side-buttons";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -504,7 +510,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		4ECC16911EE54D3D0062AC72 /* Build configuration list for PBXProject "SwipeSimulator" */ = {
+		4ECC16911EE54D3D0062AC72 /* Build configuration list for PBXProject "SensibleSideButtons" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				4ECC169B1EE54D3D0062AC72 /* Debug */,
