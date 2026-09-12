@@ -40,7 +40,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		4EC7C3B51EE711B400C9F725 /* SideButtonFixer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = SideButtonFixer.app; path = SensibleSideButtons.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		4EC7C3B51EE711B400C9F725 /* SensibleSideButtons.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SensibleSideButtons.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4EC7C3B71EE711B400C9F725 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		4EC7C3B81EE711B400C9F725 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		4EC7C3BD1EE711B400C9F725 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -111,7 +111,7 @@
 			children = (
 				4ECC16961EE54D3D0062AC72 /* swipesiml */,
 				4EF68AE91EE55A9500F6B0E8 /* swipesimr */,
-				4EC7C3B51EE711B400C9F725 /* SideButtonFixer.app */,
+				4EC7C3B51EE711B400C9F725 /* SensibleSideButtons.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -152,7 +152,7 @@
 			);
 			name = SensibleSideButtons;
 			productName = SideButtonFixer;
-			productReference = 4EC7C3B51EE711B400C9F725 /* SideButtonFixer.app */;
+			productReference = 4EC7C3B51EE711B400C9F725 /* SensibleSideButtons.app */;
 			productType = "com.apple.product-type.application";
 		};
 		4ECC16951EE54D3D0062AC72 /* swipesiml */ = {
@@ -220,7 +220,7 @@
 			};
 			buildConfigurationList = 4ECC16911EE54D3D0062AC72 /* Build configuration list for PBXProject "SwipeSimulator" */;
 			compatibilityVersion = "Xcode 3.2";
-			developmentRegion = English;
+			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
@@ -313,8 +313,9 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = SideButtonFixer/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				PRODUCT_BUNDLE_IDENTIFIER = "net.archagon.sensible-side-buttons";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -337,8 +338,9 @@
 				DEVELOPMENT_TEAM = R4MX2B96J2;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = SideButtonFixer/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				PRODUCT_BUNDLE_IDENTIFIER = "net.archagon.sensible-side-buttons";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
