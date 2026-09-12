@@ -11,6 +11,7 @@
 		4EC7C3B91EE711B400C9F725 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EC7C3B81EE711B400C9F725 /* AppDelegate.m */; };
 		4EC7C3BE1EE711B400C9F725 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4EC7C3BD1EE711B400C9F725 /* Assets.xcassets */; };
 		4EC7C3C41EE711B400C9F725 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EC7C3C31EE711B400C9F725 /* main.m */; };
+		4EC97789305617EC005144C8 /* Icon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 4EC97788305617EC005144C8 /* Icon.icon */; };
 		4ECC169A1EE54D3D0062AC72 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 4ECC16991EE54D3D0062AC72 /* main.m */; };
 		4ECC16AB1EE54D870062AC72 /* TouchEvents.c in Sources */ = {isa = PBXBuildFile; fileRef = 4ECC16A21EE54D870062AC72 /* TouchEvents.c */; };
 		4EF1B3A31EE71DC40075438A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4EF1B39F1EE71D690075438A /* Main.storyboard */; };
@@ -47,6 +48,7 @@
 		4EC7C3C21EE711B400C9F725 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4EC7C3C31EE711B400C9F725 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		4EC7C3C51EE711B400C9F725 /* SideButtonFixer.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SideButtonFixer.entitlements; sourceTree = "<group>"; };
+		4EC97788305617EC005144C8 /* Icon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = Icon.icon; sourceTree = "<group>"; };
 		4ECC16961EE54D3D0062AC72 /* swipesiml */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = swipesiml; sourceTree = BUILT_PRODUCTS_DIR; };
 		4ECC16991EE54D3D0062AC72 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		4ECC16A21EE54D870062AC72 /* TouchEvents.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = TouchEvents.c; sourceTree = "<group>"; };
@@ -88,6 +90,7 @@
 				4EC7C3B71EE711B400C9F725 /* AppDelegate.h */,
 				4EC7C3B81EE711B400C9F725 /* AppDelegate.m */,
 				4EC7C3BD1EE711B400C9F725 /* Assets.xcassets */,
+				4EC97788305617EC005144C8 /* Icon.icon */,
 				4EC7C3C21EE711B400C9F725 /* Info.plist */,
 				4EC7C3C31EE711B400C9F725 /* main.m */,
 				4EF1B39F1EE71D690075438A /* Main.storyboard */,
@@ -244,6 +247,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4EC97789305617EC005144C8 /* Icon.icon in Resources */,
 				4EC7C3BE1EE711B400C9F725 /* Assets.xcassets in Resources */,
 				4EF1B3A31EE71DC40075438A /* Main.storyboard in Resources */,
 			);
@@ -297,7 +301,7 @@
 		4EC7C3C61EE711B400C9F725 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = Icon;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
 				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_COMMA = YES;
@@ -332,7 +336,7 @@
 		4EC7C3C71EE711B400C9F725 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = Icon;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
 				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_COMMA = YES;
