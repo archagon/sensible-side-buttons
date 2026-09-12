@@ -82,6 +82,7 @@ typedef uint32_t IOHIDEventType;
 /*!
 	@typedef IOHIDAccelerometerType
 	@abstract Type of accelerometer event triggered.
+    @discussion
 	@constant kIOHIDAccelerometerTypeNormal
 	@constant kIOHIDAccelerometerTypeShake
 */
@@ -94,6 +95,7 @@ typedef uint32_t IOHIDAccelerometerType;
 /*!
 	@typedef IOHIDSwipeMask
 	@abstract Mask detailing the type of swipe detected.
+    @discussion
 	@constant kIOHIDProximityDetectionLargeBodyContact
 	@constant kIOHIDProximityDetectionLargeBodyFarField
 	@constant kIOHIDProximityDetectionIrregularObjects
@@ -116,6 +118,7 @@ typedef uint32_t IOHIDSwipeMask;
 /*!
 	@typedef IOHIDProximityDetectionMask
 	@abstract Proximity mask detailing the inputs that were detected.
+    @discussion
 	@constant kIOHIDProximityDetectionLargeBodyContact
 	@constant kIOHIDProximityDetectionLargeBodyFarField
 	@constant kIOHIDProximityDetectionIrregularObjects
