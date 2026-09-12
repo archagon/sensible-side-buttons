@@ -48,7 +48,7 @@ const CFStringRef kTLEventKeyMinorRadius = CFSTR("minorRadius");
 
 static inline IOFixed tl_float2fixed(double f) { return (IOFixed)(f * 65536.0); }
 
-static inline uint64_t tl_uptime() {
+static inline uint64_t tl_uptime(void) {
 	AbsoluteTime uptimeAbs = AbsoluteToNanoseconds(UpTime());
 	return ((uint64_t)uptimeAbs.hi << 32) + uptimeAbs.lo;
 }
