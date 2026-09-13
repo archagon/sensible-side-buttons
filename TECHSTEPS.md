@@ -13,11 +13,11 @@ Creating DMG:
 
 Verifying certificate:
 
-1. codesign -dvvv SensibleSideButtons.app
-2. codesign --verify --deep --strict --verbose=2 SensibleSideButtons.app
+1. `codesign -dvvv SensibleSideButtons.app`
+2. `codesign --verify --deep --strict --verbose=2 SensibleSideButtons.app`
 3. https://developer.apple.com/library/content/technotes/tn2206/_index.html
 
 Managing defaults:
 
-1. defaults read net.archagon.sensible-side-buttons
-2. defaults delete net.archagon.sensible-side-buttons
+1. `defaults read net.archagon.sensible-side-buttons`
+2. `defaults delete net.archagon.sensible-side-buttons`
