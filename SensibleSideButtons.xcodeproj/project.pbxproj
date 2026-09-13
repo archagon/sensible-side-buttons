@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 54;
+	objectVersion = 70;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -12,33 +12,19 @@
 		4EC7C3BE1EE711B400C9F725 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4EC7C3BD1EE711B400C9F725 /* Assets.xcassets */; };
 		4EC7C3C41EE711B400C9F725 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EC7C3C31EE711B400C9F725 /* main.m */; };
 		4EC97789305617EC005144C8 /* Icon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 4EC97788305617EC005144C8 /* Icon.icon */; };
-		4ECC169A1EE54D3D0062AC72 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 4ECC16991EE54D3D0062AC72 /* main.m */; };
-		4ECC16AB1EE54D870062AC72 /* TouchEvents.c in Sources */ = {isa = PBXBuildFile; fileRef = 4ECC16A21EE54D870062AC72 /* TouchEvents.c */; };
+		4ECD2F7630563C920036575F /* TouchEvents.c in Sources */ = {isa = PBXBuildFile; fileRef = 4ECC16A21EE54D870062AC72 /* TouchEvents.c */; };
 		4EF1B3A31EE71DC40075438A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4EF1B39F1EE71D690075438A /* Main.storyboard */; };
-		4EF68AE21EE55A9500F6B0E8 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 4ECC16991EE54D3D0062AC72 /* main.m */; };
-		4EF68AE31EE55A9500F6B0E8 /* TouchEvents.c in Sources */ = {isa = PBXBuildFile; fileRef = 4ECC16A21EE54D870062AC72 /* TouchEvents.c */; };
 /* End PBXBuildFile section */
 
-/* Begin PBXCopyFilesBuildPhase section */
-		4ECC16941EE54D3D0062AC72 /* CopyFiles */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = /usr/share/man/man1/;
-			dstSubfolderSpec = 0;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 1;
+/* Begin PBXContainerItemProxy section */
+		4ECD2F7130563BEB0036575F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4ECC168E1EE54D3D0062AC72 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 4EC7C3B41EE711B400C9F725;
+			remoteInfo = SensibleSideButtons;
 		};
-		4EF68AE51EE55A9500F6B0E8 /* CopyFiles */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = /usr/share/man/man1/;
-			dstSubfolderSpec = 0;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 1;
-		};
-/* End PBXCopyFilesBuildPhase section */
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		4EC7C3B51EE711B400C9F725 /* SensibleSideButtons.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SensibleSideButtons.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -49,15 +35,18 @@
 		4EC7C3C31EE711B400C9F725 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		4EC7C3C51EE711B400C9F725 /* SideButtonFixer.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SideButtonFixer.entitlements; sourceTree = "<group>"; };
 		4EC97788305617EC005144C8 /* Icon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = Icon.icon; sourceTree = "<group>"; };
-		4ECC16961EE54D3D0062AC72 /* swipesiml */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = swipesiml; sourceTree = BUILT_PRODUCTS_DIR; };
-		4ECC16991EE54D3D0062AC72 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		4ECC16A21EE54D870062AC72 /* TouchEvents.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = TouchEvents.c; sourceTree = "<group>"; };
 		4ECC16A31EE54D870062AC72 /* IOHIDEventTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOHIDEventTypes.h; sourceTree = "<group>"; };
 		4ECC16A41EE54D870062AC72 /* IOHIDEventData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOHIDEventData.h; sourceTree = "<group>"; };
 		4ECC16A71EE54D870062AC72 /* TouchEvents.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TouchEvents.h; sourceTree = "<group>"; };
+		4ECD2F6D30563BEB0036575F /* SensibleSideButtonsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SensibleSideButtonsTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		4ECD2F7830563CD70036575F /* SensibleSideButtons-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SensibleSideButtons-Bridging-Header.h"; sourceTree = "<group>"; };
 		4EF1B3A01EE71D690075438A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		4EF68AE91EE55A9500F6B0E8 /* swipesimr */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = swipesimr; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		4ECD2F6E30563BEB0036575F /* SensibleSideButtonsTests */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = SensibleSideButtonsTests; sourceTree = "<group>"; };
+/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		4EC7C3B21EE711B400C9F725 /* Frameworks */ = {
@@ -67,14 +56,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		4ECC16931EE54D3D0062AC72 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		4EF68AE41EE55A9500F6B0E8 /* Frameworks */ = {
+		4ECD2F6A30563BEB0036575F /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -102,29 +84,21 @@
 		4ECC168D1EE54D3D0062AC72 = {
 			isa = PBXGroup;
 			children = (
-				4ECC16981EE54D3D0062AC72 /* SwipeSimulator */,
 				4EC7C3B61EE711B400C9F725 /* SensibleSideButtons */,
 				4ECC16A01EE54D790062AC72 /* External */,
+				4ECD2F6E30563BEB0036575F /* SensibleSideButtonsTests */,
 				4ECC16971EE54D3D0062AC72 /* Products */,
+				4ECD2F7830563CD70036575F /* SensibleSideButtons-Bridging-Header.h */,
 			);
 			sourceTree = "<group>";
 		};
 		4ECC16971EE54D3D0062AC72 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				4ECC16961EE54D3D0062AC72 /* swipesiml */,
-				4EF68AE91EE55A9500F6B0E8 /* swipesimr */,
 				4EC7C3B51EE711B400C9F725 /* SensibleSideButtons.app */,
+				4ECD2F6D30563BEB0036575F /* SensibleSideButtonsTests.xctest */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		4ECC16981EE54D3D0062AC72 /* SwipeSimulator */ = {
-			isa = PBXGroup;
-			children = (
-				4ECC16991EE54D3D0062AC72 /* main.m */,
-			);
-			path = SwipeSimulator;
 			sourceTree = "<group>";
 		};
 		4ECC16A01EE54D790062AC72 /* External */ = {
@@ -158,39 +132,28 @@
 			productReference = 4EC7C3B51EE711B400C9F725 /* SensibleSideButtons.app */;
 			productType = "com.apple.product-type.application";
 		};
-		4ECC16951EE54D3D0062AC72 /* swipesiml */ = {
+		4ECD2F6C30563BEB0036575F /* SensibleSideButtonsTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 4ECC169D1EE54D3D0062AC72 /* Build configuration list for PBXNativeTarget "swipesiml" */;
+			buildConfigurationList = 4ECD2F7530563BEB0036575F /* Build configuration list for PBXNativeTarget "SensibleSideButtonsTests" */;
 			buildPhases = (
-				4ECC16921EE54D3D0062AC72 /* Sources */,
-				4ECC16931EE54D3D0062AC72 /* Frameworks */,
-				4ECC16941EE54D3D0062AC72 /* CopyFiles */,
+				4ECD2F6930563BEB0036575F /* Sources */,
+				4ECD2F6A30563BEB0036575F /* Frameworks */,
+				4ECD2F6B30563BEB0036575F /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				4ECD2F7230563BEB0036575F /* PBXTargetDependency */,
 			);
-			name = swipesiml;
-			productName = SwipeSimulator;
-			productReference = 4ECC16961EE54D3D0062AC72 /* swipesiml */;
-			productType = "com.apple.product-type.tool";
-		};
-		4EF68AE01EE55A9500F6B0E8 /* swipesimr */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 4EF68AE61EE55A9500F6B0E8 /* Build configuration list for PBXNativeTarget "swipesimr" */;
-			buildPhases = (
-				4EF68AE11EE55A9500F6B0E8 /* Sources */,
-				4EF68AE41EE55A9500F6B0E8 /* Frameworks */,
-				4EF68AE51EE55A9500F6B0E8 /* CopyFiles */,
+			fileSystemSynchronizedGroups = (
+				4ECD2F6E30563BEB0036575F /* SensibleSideButtonsTests */,
 			);
-			buildRules = (
+			name = SensibleSideButtonsTests;
+			packageProductDependencies = (
 			);
-			dependencies = (
-			);
-			name = swipesimr;
-			productName = SwipeSimulator;
-			productReference = 4EF68AE91EE55A9500F6B0E8 /* swipesimr */;
-			productType = "com.apple.product-type.tool";
+			productName = SensibleSideButtonsTests;
+			productReference = 4ECD2F6D30563BEB0036575F /* SensibleSideButtonsTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
 
@@ -199,12 +162,14 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
+				LastSwiftUpdateCheck = 2660;
 				LastUpgradeCheck = 2660;
 				ORGANIZATIONNAME = "Alexei Baboulevitch";
 				TargetAttributes = {
 					4EC7C3B41EE711B400C9F725 = {
 						CreatedOnToolsVersion = 9.0;
 						DevelopmentTeam = R4MX2B96J2;
+						LastSwiftMigration = 2660;
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
 							com.apple.Sandbox = {
@@ -212,13 +177,8 @@
 							};
 						};
 					};
-					4ECC16951EE54D3D0062AC72 = {
-						CreatedOnToolsVersion = 8.3.1;
-						DevelopmentTeam = R4MX2B96J2;
-						ProvisioningStyle = Automatic;
-					};
-					4EF68AE01EE55A9500F6B0E8 = {
-						DevelopmentTeam = R4MX2B96J2;
+					4ECD2F6C30563BEB0036575F = {
+						CreatedOnToolsVersion = 26.6;
 					};
 				};
 			};
@@ -235,9 +195,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				4ECC16951EE54D3D0062AC72 /* swipesiml */,
-				4EF68AE01EE55A9500F6B0E8 /* swipesimr */,
 				4EC7C3B41EE711B400C9F725 /* SensibleSideButtons */,
+				4ECD2F6C30563BEB0036575F /* SensibleSideButtonsTests */,
 			);
 		};
 /* End PBXProject section */
@@ -250,6 +209,13 @@
 				4EC97789305617EC005144C8 /* Icon.icon in Resources */,
 				4EC7C3BE1EE711B400C9F725 /* Assets.xcassets in Resources */,
 				4EF1B3A31EE71DC40075438A /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4ECD2F6B30563BEB0036575F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -266,25 +232,23 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		4ECC16921EE54D3D0062AC72 /* Sources */ = {
+		4ECD2F6930563BEB0036575F /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4ECC169A1EE54D3D0062AC72 /* main.m in Sources */,
-				4ECC16AB1EE54D870062AC72 /* TouchEvents.c in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		4EF68AE11EE55A9500F6B0E8 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				4EF68AE21EE55A9500F6B0E8 /* main.m in Sources */,
-				4EF68AE31EE55A9500F6B0E8 /* TouchEvents.c in Sources */,
+				4ECD2F7630563C920036575F /* TouchEvents.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		4ECD2F7230563BEB0036575F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 4EC7C3B41EE711B400C9F725 /* SensibleSideButtons */;
+			targetProxy = 4ECD2F7130563BEB0036575F /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		4EF1B39F1EE71D690075438A /* Main.storyboard */ = {
@@ -303,6 +267,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = Icon;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_MODULES = YES;
 				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
@@ -330,6 +295,8 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "net.archagon.sensible-side-buttons";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 6.0;
 			};
 			name = Debug;
 		};
@@ -338,6 +305,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = Icon;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_MODULES = YES;
 				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
@@ -361,6 +329,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "net.archagon.sensible-side-buttons";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_VERSION = 6.0;
 			};
 			name = Release;
 		};
@@ -477,61 +446,65 @@
 			};
 			name = Release;
 		};
-		4ECC169E1EE54D3D0062AC72 /* Debug */ = {
+		4ECD2F7330563BEB0036575F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				DEAD_CODE_STRIPPING = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(SYSTEM_LIBRARY_DIR)/PrivateFrameworks",
-				);
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = R4MX2B96J2;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GCC_PREPROCESSOR_DEFINITIONS = (
-					"LEFT=1",
 					"DEBUG=1",
+					"$(inherited)",
 				);
+				GENERATE_INFOPLIST_FILE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 26.5;
+				MARKETING_VERSION = 1.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = net.archagon.SensibleSideButtonsTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_OBJC_BRIDGING_HEADER = "SensibleSideButtons-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
 		};
-		4ECC169F1EE54D3D0062AC72 /* Release */ = {
+		4ECD2F7430563BEB0036575F /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				DEAD_CODE_STRIPPING = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(SYSTEM_LIBRARY_DIR)/PrivateFrameworks",
-				);
-				GCC_PREPROCESSOR_DEFINITIONS = "LEFT=1";
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = R4MX2B96J2;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 26.5;
+				MARKETING_VERSION = 1.0;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = net.archagon.SensibleSideButtonsTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-			};
-			name = Release;
-		};
-		4EF68AE71EE55A9500F6B0E8 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				DEAD_CODE_STRIPPING = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(SYSTEM_LIBRARY_DIR)/PrivateFrameworks",
-				);
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"RIGHT=1",
-					"DEBUG=1",
-				);
-				PRODUCT_NAME = "$(TARGET_NAME)";
-			};
-			name = Debug;
-		};
-		4EF68AE81EE55A9500F6B0E8 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				DEAD_CODE_STRIPPING = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(SYSTEM_LIBRARY_DIR)/PrivateFrameworks",
-				);
-				GCC_PREPROCESSOR_DEFINITIONS = "RIGHT=1";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_OBJC_BRIDGING_HEADER = "SensibleSideButtons-Bridging-Header.h";
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
 		};
@@ -556,20 +529,11 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		4ECC169D1EE54D3D0062AC72 /* Build configuration list for PBXNativeTarget "swipesiml" */ = {
+		4ECD2F7530563BEB0036575F /* Build configuration list for PBXNativeTarget "SensibleSideButtonsTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				4ECC169E1EE54D3D0062AC72 /* Debug */,
-				4ECC169F1EE54D3D0062AC72 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		4EF68AE61EE55A9500F6B0E8 /* Build configuration list for PBXNativeTarget "swipesimr" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				4EF68AE71EE55A9500F6B0E8 /* Debug */,
-				4EF68AE81EE55A9500F6B0E8 /* Release */,
+				4ECD2F7330563BEB0036575F /* Debug */,
+				4ECD2F7430563BEB0036575F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
