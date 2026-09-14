@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="100%" height="100%" viewBox="0 0 712 712" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
+    <g id="Arrows" transform="matrix(5.55556,0,0,5.55556,0,0)">
+        <g transform="matrix(0.18,0,0,0.18,0,0)">
+            <path d="M514.203,275.309C516.114,275.309 518.537,276.721 521.164,279.626L578.564,342.987C584.692,349.754 584.692,360.832 578.564,367.598L521.164,430.965C518.537,433.865 516.114,435.276 514.203,435.276C511.659,435.276 510.026,432.776 510.026,427.971L510.026,282.621C510.026,277.809 511.659,275.309 514.203,275.309Z" style="fill-rule:nonzero;"/>
+        </g>
+        <g transform="matrix(0.18,0,0,0.18,0,0)">
+            <path d="M197.607,275.309C195.696,275.309 193.268,276.721 190.646,279.626L133.246,342.987C127.118,349.754 127.118,360.832 133.246,367.598L190.646,430.965C193.274,433.865 195.696,435.276 197.607,435.276C200.152,435.276 201.785,432.776 201.785,427.971L201.785,282.621C201.785,277.809 200.152,275.309 197.607,275.309Z" style="fill-rule:nonzero;"/>
+        </g>
+    </g>
+</svg>

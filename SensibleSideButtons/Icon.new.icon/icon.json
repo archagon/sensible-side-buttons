@@ -1,0 +1,89 @@
+{
+  "fill" : {
+    "solid" : "display-p3:0.52930,0.86670,0.98438,1.00000"
+  },
+  "groups" : [
+    {
+      "layers" : [
+        {
+          "blend-mode" : "plus-lighter",
+          "fill" : {
+            "solid" : "srgb:1.00000,1.00000,1.00000,1.00000"
+          },
+          "glass" : false,
+          "image-name" : "Arrows.svg",
+          "name" : "Arrows",
+          "opacity" : 0.25,
+          "position" : {
+            "scale" : 1.6,
+            "translation-in-points" : [
+              0,
+              4
+            ]
+          }
+        },
+        {
+          "blend-mode" : "plus-lighter",
+          "fill" : {
+            "solid" : "srgb:1.00000,1.00000,1.00000,1.00000"
+          },
+          "glass" : false,
+          "image-name" : "Mouse.svg",
+          "name" : "Mouse",
+          "position" : {
+            "scale" : 1.6,
+            "translation-in-points" : [
+              0,
+              4
+            ]
+          }
+        },
+        {
+          "fill" : {
+            "solid" : "srgb:1.00000,1.00000,1.00000,1.00000"
+          },
+          "glass" : false,
+          "hidden" : true,
+          "image-name" : "Circle.svg",
+          "name" : "Circle",
+          "opacity" : 0.2,
+          "position" : {
+            "scale" : 1.3,
+            "translation-in-points" : [
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "fill" : {
+            "automatic-gradient" : "display-p3:0.28638,0.64697,0.94922,1.00000"
+          },
+          "hidden" : false,
+          "image-name" : "Circle.svg",
+          "name" : "Circle",
+          "position" : {
+            "scale" : 1.5,
+            "translation-in-points" : [
+              0,
+              0
+            ]
+          }
+        }
+      ],
+      "shadow" : {
+        "kind" : "neutral",
+        "opacity" : 0.5
+      },
+      "translucency" : {
+        "enabled" : true,
+        "value" : 0.5
+      }
+    }
+  ],
+  "supported-platforms" : {
+    "squares" : [
+      "macOS"
+    ]
+  }
+}
