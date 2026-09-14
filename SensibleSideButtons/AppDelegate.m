@@ -198,7 +198,7 @@ typedef NS_ENUM(NSInteger, MenuItem) {
         assert(menu.itemArray.count - 1 == MenuItemStartupSeparator);
         
         AboutView* text = [[AboutView alloc] initWithFrame:NSMakeRect(0, 0, 320, 100)]; //arbitrary height
-        NSMenuItem* aboutText = [[NSMenuItem alloc] initWithTitle:@"Text" action:NULL keyEquivalent:@""];
+        NSMenuItem* aboutText = [[NSMenuItem alloc] initWithTitle:@"" action:NULL keyEquivalent:@""];
         aboutText.view = text;
         [menu addItem:aboutText];
         assert(menu.itemArray.count - 1 == MenuItemAboutText);
@@ -399,7 +399,12 @@ typedef NS_ENUM(NSInteger, MenuItem) {
 @implementation AboutView
 
 -(CGFloat) margin {
-    return 17;
+    // I hate that we have to special-case this, but I'm not sure how else to get the standard menu text inset.
+    if (@available(macOS 27.0, *)) {
+        return 25;
+    } else {
+        return 19;
+    }
 }
 
 -(void) setMenuMode:(MenuMode)menuMode {

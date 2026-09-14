@@ -8,7 +8,9 @@
 
 import Testing
 
-// These tests don't really do anything, but they can help debug event code more easily.
+// These tests don't automatically validate the expected behavior.
+// However, they can trigger navigation in the Xcode editor.
+// They can also help debug event code more easily.
 struct SensibleSideButtonsTests {
     
     @Test func testSwipeLeft() async throws {
@@ -20,41 +22,32 @@ struct SensibleSideButtonsTests {
     }
     
     func testSwipe(direction: TLInfoSwipeDirection) async throws {
-        guard let kTLInfoKeyGestureSubtype: NSString = kTLInfoKeyGestureSubtype else {
-            fatalError()
-        }
-        guard let kTLInfoKeySwipeDirection: NSString = kTLInfoKeySwipeDirection else {
-            fatalError()
-        }
-        guard let kTLInfoKeyGesturePhase: NSString = kTLInfoKeyGesturePhase else {
-            fatalError()
-        }
+        let kTLInfoKeyGestureSubtype: NSString = try #require(kTLInfoKeyGestureSubtype)
+        let kTLInfoKeySwipeDirection: NSString = try #require(kTLInfoKeySwipeDirection)
+        let kTLInfoKeyGesturePhase: NSString = try #require(kTLInfoKeyGesturePhase)
         
         let swipeInfo1 = NSDictionary.init(objects: [
-            kTLInfoSubtypeSwipe, 1
+            kTLInfoSubtypeSwipe, CGGesturePhase.began.rawValue
         ], forKeys: [
             kTLInfoKeyGestureSubtype, kTLInfoKeyGesturePhase
         ])
         
         let swipeInfo2 = NSDictionary.init(objects: [
-            kTLInfoSubtypeSwipe, direction, 4
+            kTLInfoSubtypeSwipe, direction, CGGesturePhase.ended.rawValue
         ], forKeys: [
             kTLInfoKeyGestureSubtype, kTLInfoKeySwipeDirection, kTLInfoKeyGesturePhase
         ])
         
-        let event1 = tl_CGEventCreateFromGesture(swipeInfo1, [] as CFArray)
-        let event2 = tl_CGEventCreateFromGesture(swipeInfo2, [] as CFArray)
+        let event1 = try #require(tl_CGEventCreateFromGesture(swipeInfo1, [] as CFArray))
+        let event2 = try #require(tl_CGEventCreateFromGesture(swipeInfo2, [] as CFArray))
         
-        event1?.takeRetainedValue().post(tap: .cghidEventTap)
-        event2?.takeRetainedValue().post(tap: .cghidEventTap)
+        event1.takeUnretainedValue().post(tap: .cghidEventTap)
+        event2.takeUnretainedValue().post(tap: .cghidEventTap)
         
-        print("sent event");
+        event1.release()
+        event2.release()
         
-        // in order to complete, we have to wait
-        //Task.sleep(nanoseconds: 1000000)
-        try await Task.sleep(nanoseconds: 1000000/128)
-        
-        print("done");
+        print("🧪 Sent event");
     }
 
 }
