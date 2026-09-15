@@ -196,7 +196,7 @@ static void fillOutDigitizer(CFDictionaryRef info, IOHIDDigitizerEventData* even
 	}
 }
 
-CGEventRef tl_CGEventCreateFromGesture(CFDictionaryRef info, CFArrayRef touches) {
+CFMutableDataRef tl_CGEventDataCreateFromGesture(CFDictionaryRef info, CFArrayRef touches) {
 	assert(info != NULL);
 	assert(touches != NULL);
 	typedef struct {
@@ -397,6 +397,11 @@ CGEventRef tl_CGEventCreateFromGesture(CFDictionaryRef info, CFArrayRef touches)
 	appendFloatField(gestureData, 0x8B, 0.0f);		// magic?
 	appendFloatField(gestureData, 0x8C, 0.0f);		// magic?
 	
+    return gestureData;
+}
+
+CGEventRef tl_CGEventCreateFromGesture(CFDictionaryRef info, CFArrayRef touches) {
+    __auto_type gestureData = tl_CGEventDataCreateFromGesture(info, touches);
 	CGEventRef synthEvent = CGEventCreateFromData(kCFAllocatorDefault, gestureData);
 	CFRelease(gestureData);
 	return synthEvent;
