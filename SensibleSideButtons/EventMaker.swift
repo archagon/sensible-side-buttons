@@ -53,8 +53,10 @@ import AppKit
         
         addField(data: &eventData, type: 0x40, field: 0x84, value: UInt8(phase.rawValue))
         
-        // Originally, this field was only filled in for CGGesturePhase.ended, but adding it every time seems to cause no harm.
-        addField(data: &eventData, type: 0x40, field: 0x73, value: swipeDirection.rawValue)
+        // This should only go at the end, or else swipes may be duplicated.
+        if phase == .ended {
+            addField(data: &eventData, type: 0x40, field: 0x73, value: swipeDirection.rawValue)
+        }
         
         guard let newEvent = CGEvent(withDataAllocator: nil, data: eventData as CFData) else {
             throw EventMakerError.error("Could not create new CGEvent from modified data")
