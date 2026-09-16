@@ -46,8 +46,6 @@ static void SBFFakeSwipe(TLInfoSwipeDirection dir) {
         
         CGEventPost(kCGHIDEventTap, eventStart);
         CGEventPost(kCGHIDEventTap, eventEnd);
-        
-        return;
     } else {
         // I don't have any machines to test this, so leaving a legacy path.
         
