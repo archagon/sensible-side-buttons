@@ -81,12 +81,15 @@ struct SensibleSideButtonsTests {
     
     @Test func testEventData() throws {
         let kTLInfoKeyGestureSubtype: NSString = try #require(kTLInfoKeyGestureSubtype)
+        let kTLInfoKeySwipeDirection: NSString = try #require(kTLInfoKeySwipeDirection)
         let kTLInfoKeyGesturePhase: NSString = try #require(kTLInfoKeyGesturePhase)
         
+        let direction = TLInfoSwipeDirection(kTLInfoSwipeLeft)
+        
         let swipeInfo = NSDictionary.init(objects: [
-            kTLInfoSubtypeSwipe, CGGesturePhase.began.rawValue
+            kTLInfoSubtypeSwipe, direction, CGGesturePhase.ended.rawValue
         ], forKeys: [
-            kTLInfoKeyGestureSubtype, kTLInfoKeyGesturePhase
+            kTLInfoKeyGestureSubtype, kTLInfoKeySwipeDirection, kTLInfoKeyGesturePhase
         ])
         
         let eventDataBase = try #require(tl_CGEventDataCreateFromGesture(swipeInfo, [] as CFArray))
@@ -132,5 +135,43 @@ struct SensibleSideButtonsTests {
         
         let randomEvent2 = CGEvent(withDataAllocator: kCFAllocatorDefault, data: randomData as CFData)
         #expect(randomEvent2 == nil)
+    }
+    
+    @Test func testTweakedEvent() throws {
+        func addField(data: inout Data, type: UInt8, field: UInt8, value: InlineArray<4, UInt8>) {
+            data.append(contentsOf: [0x00, 0x01, type, field, value[0], value[1], value[2], value[3]])
+        }
+        
+        let event1 = try #require(CGEvent(source: nil))
+        let event2 = try #require(CGEvent(source: nil))
+        
+        for event in [event1, event2] {
+            let gestureType = UInt32(NSEvent.EventType.gesture.rawValue)
+            event.type = CGEventType(rawValue: gestureType)!
+            event.flags = CGEventFlags(rawValue: 256)
+            event.timestamp = 0
+        }
+        
+        let subtypeSwipe: UInt8 = 0x10
+        let swipeLeft: UInt8 = 4
+        let swipeRight: UInt8 = 8
+        
+        var event1Data = try #require(event1.data) as Data
+        addField(data: &event1Data, type: 0x40, field: 0x6e, value: [0,0,0, subtypeSwipe])
+        addField(data: &event1Data, type: 0x40, field: 0x84, value: [0,0,0, UInt8(CGGesturePhase.began.rawValue)])
+        addField(data: &event1Data, type: 0x40, field: 0x73, value: [0,0,0, 0])
+        
+        var event2Data = try #require(event2.data) as Data
+        addField(data: &event2Data, type: 0x40, field: 0x6e, value: [0,0,0, subtypeSwipe])
+        addField(data: &event2Data, type: 0x40, field: 0x84, value: [0,0,0, UInt8(CGGesturePhase.ended.rawValue)])
+        addField(data: &event2Data, type: 0x40, field: 0x73, value: [0,0,0, swipeRight])
+        
+        let newEvent1 = try #require(CGEvent(withDataAllocator: nil, data: event1Data as CFData))
+        let newEvent2 = try #require(CGEvent(withDataAllocator: nil, data: event2Data as CFData))
+        
+        newEvent1.post(tap: .cghidEventTap)
+        newEvent2.post(tap: .cghidEventTap)
+        
+        print("🧪 Done");
     }
 }

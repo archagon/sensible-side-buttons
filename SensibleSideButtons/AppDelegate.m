@@ -22,6 +22,8 @@
 #import "AppDelegate.h"
 #import "TouchEvents.h"
 
+#import "SensibleSideButtons-Swift.h"
+
 static NSMutableDictionary<NSNumber*, NSArray<NSDictionary*>*>* swipeInfo = nil;
 static NSArray* nullArray = nil;
 

@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		4E9995151EE7172700A1CFA6 /* TouchEvents.c in Sources */ = {isa = PBXBuildFile; fileRef = 4ECC16A21EE54D870062AC72 /* TouchEvents.c */; settings = {COMPILER_FLAGS = "-w"; }; };
+		4EA49DFD305A363C004471ED /* EventMaker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4EA49DFC305A363C004471ED /* EventMaker.swift */; };
 		4EC7C3B91EE711B400C9F725 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EC7C3B81EE711B400C9F725 /* AppDelegate.m */; };
 		4EC7C3BE1EE711B400C9F725 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4EC7C3BD1EE711B400C9F725 /* Assets.xcassets */; };
 		4EC7C3C41EE711B400C9F725 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EC7C3C31EE711B400C9F725 /* main.m */; };
@@ -28,6 +29,7 @@
 
 /* Begin PBXFileReference section */
 		4EA49DEE305A04B0004471ED /* EventTapTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EventTapTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		4EA49DFC305A363C004471ED /* EventMaker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventMaker.swift; sourceTree = "<group>"; };
 		4EC7C3B51EE711B400C9F725 /* SensibleSideButtons.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SensibleSideButtons.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4EC7C3B71EE711B400C9F725 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		4EC7C3B81EE711B400C9F725 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -86,6 +88,7 @@
 				4EC7C3C31EE711B400C9F725 /* main.m */,
 				4EF1B39F1EE71D690075438A /* Main.storyboard */,
 				4EC7C3C51EE711B400C9F725 /* SideButtonFixer.entitlements */,
+				4EA49DFC305A363C004471ED /* EventMaker.swift */,
 			);
 			path = SensibleSideButtons;
 			sourceTree = "<group>";
@@ -278,6 +281,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4EC7C3C41EE711B400C9F725 /* main.m in Sources */,
+				4EA49DFD305A363C004471ED /* EventMaker.swift in Sources */,
 				4E9995151EE7172700A1CFA6 /* TouchEvents.c in Sources */,
 				4EC7C3B91EE711B400C9F725 /* AppDelegate.m in Sources */,
 			);
@@ -436,6 +440,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "net.archagon.sensible-side-buttons";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "SensibleSideButtons-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 6.0;
 			};
@@ -470,6 +475,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "net.archagon.sensible-side-buttons";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "SensibleSideButtons-Bridging-Header.h";
 				SWIFT_VERSION = 6.0;
 			};
 			name = Release;
