@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		4E9995151EE7172700A1CFA6 /* TouchEvents.c in Sources */ = {isa = PBXBuildFile; fileRef = 4ECC16A21EE54D870062AC72 /* TouchEvents.c */; settings = {COMPILER_FLAGS = "-w"; }; };
 		4EA49DFD305A363C004471ED /* EventMaker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4EA49DFC305A363C004471ED /* EventMaker.swift */; };
+		4EA49E00305A3C84004471ED /* EventMaker_Compatibility.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EA49DFF305A3C84004471ED /* EventMaker_Compatibility.m */; };
 		4EC7C3B91EE711B400C9F725 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EC7C3B81EE711B400C9F725 /* AppDelegate.m */; };
 		4EC7C3BE1EE711B400C9F725 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4EC7C3BD1EE711B400C9F725 /* Assets.xcassets */; };
 		4EC7C3C41EE711B400C9F725 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EC7C3C31EE711B400C9F725 /* main.m */; };
@@ -30,6 +31,8 @@
 /* Begin PBXFileReference section */
 		4EA49DEE305A04B0004471ED /* EventTapTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EventTapTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4EA49DFC305A363C004471ED /* EventMaker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventMaker.swift; sourceTree = "<group>"; };
+		4EA49DFE305A3C84004471ED /* EventMaker_Compatibility.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EventMaker_Compatibility.h; sourceTree = "<group>"; };
+		4EA49DFF305A3C84004471ED /* EventMaker_Compatibility.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EventMaker_Compatibility.m; sourceTree = "<group>"; };
 		4EC7C3B51EE711B400C9F725 /* SensibleSideButtons.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SensibleSideButtons.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4EC7C3B71EE711B400C9F725 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		4EC7C3B81EE711B400C9F725 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -89,6 +92,8 @@
 				4EF1B39F1EE71D690075438A /* Main.storyboard */,
 				4EC7C3C51EE711B400C9F725 /* SideButtonFixer.entitlements */,
 				4EA49DFC305A363C004471ED /* EventMaker.swift */,
+				4EA49DFE305A3C84004471ED /* EventMaker_Compatibility.h */,
+				4EA49DFF305A3C84004471ED /* EventMaker_Compatibility.m */,
 			);
 			path = SensibleSideButtons;
 			sourceTree = "<group>";
@@ -283,6 +288,7 @@
 				4EC7C3C41EE711B400C9F725 /* main.m in Sources */,
 				4EA49DFD305A363C004471ED /* EventMaker.swift in Sources */,
 				4E9995151EE7172700A1CFA6 /* TouchEvents.c in Sources */,
+				4EA49E00305A3C84004471ED /* EventMaker_Compatibility.m in Sources */,
 				4EC7C3B91EE711B400C9F725 /* AppDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -421,7 +427,7 @@
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 100;
+				CURRENT_PROJECT_VERSION = 110;
 				DEAD_CODE_STRIPPING = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -436,7 +442,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.0.7;
+				MARKETING_VERSION = 1.0.9;
 				PRODUCT_BUNDLE_IDENTIFIER = "net.archagon.sensible-side-buttons";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -460,7 +466,7 @@
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 100;
+				CURRENT_PROJECT_VERSION = 110;
 				DEAD_CODE_STRIPPING = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -471,7 +477,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.0.7;
+				MARKETING_VERSION = 1.0.9;
 				PRODUCT_BUNDLE_IDENTIFIER = "net.archagon.sensible-side-buttons";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";

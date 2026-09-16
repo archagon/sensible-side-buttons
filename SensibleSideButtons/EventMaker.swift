@@ -10,18 +10,17 @@ import AppKit
 
 @objc class EventMaker : NSObject {
     
+    // "TLInfoSwipeDirection" == IOHIDSwipeMask?
     @objc enum SwipeDirection: UInt8 {
-        case up = 1
-        case down = 2
-        case left = 4
-        case right = 8
+        case up     = 0b0001
+        case down   = 0b0010
+        case left   = 0b0100
+        case right  = 0b1000
     }
     
+    // "TLInfoSubtype" == IOHIDEventType?
     @objc enum Subtype: UInt8 {
-        case rotate = 0x05
-        case magnify = 0x08
-        case gesture = 0x0B
-        case swipe = 0x10
+        case swipe  = 0x10
     }
     
     @objc class func createGestureEvent(withSwipeDirection swipeDirection: SwipeDirection, phase: CGGesturePhase) throws -> CGEvent {
@@ -31,20 +30,18 @@ import AppKit
         
         let event = CGEvent(source: nil)!
         
-        let gestureType = UInt32(NSEvent.EventType.gesture.rawValue)
-        event.type = CGEventType(rawValue: gestureType)!
+        event.type = CGEventType(rawValue: UInt32(NSEvent.EventType.gesture.rawValue))!
         event.flags = CGEventFlags(rawValue: 256)
-        event.timestamp = 0
+        event.timestamp =  DispatchTime.now().uptimeNanoseconds // not sure if this is even necessary
         
-        var eventData: Data
-        if #available(macOS 26.5, *) {
-            eventData = event.data! as Data
-        } else {
-            fatalError("Wrong OS version")
-        }
+        var eventData = EventMaker_Compatibility.data(from: event)!
         
+        // The base event data already contains this field. But adding it again seems to replace it.
         addField(data: &eventData, type: 0x40, field: 0x6e, value: (0,0,0, Subtype.swipe.rawValue))
+        
         addField(data: &eventData, type: 0x40, field: 0x84, value: (0,0,0, UInt8(phase.rawValue)))
+        
+        // Originally, this field was only filled in for CGGesturePhase.ended, but adding it every time seems to cause no harm.
         addField(data: &eventData, type: 0x40, field: 0x73, value: (0,0,0, swipeDirection.rawValue))
         
         let newEvent = CGEvent(withDataAllocator: nil, data: eventData as CFData)!

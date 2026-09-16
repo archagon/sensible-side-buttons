@@ -28,14 +28,44 @@ static NSMutableDictionary<NSNumber*, NSArray<NSDictionary*>*>* swipeInfo = nil;
 static NSArray* nullArray = nil;
 
 static void SBFFakeSwipe(TLInfoSwipeDirection dir) {
-    CGEventRef event1 = tl_CGEventCreateFromGesture((__bridge CFDictionaryRef)(swipeInfo[@(dir)][0]), (__bridge CFArrayRef)nullArray);
-    CGEventRef event2 = tl_CGEventCreateFromGesture((__bridge CFDictionaryRef)(swipeInfo[@(dir)][1]), (__bridge CFArrayRef)nullArray);
+    static const BOOL debugLegacyPath = NO;
     
-    CGEventPost(kCGHIDEventTap, event1);
-    CGEventPost(kCGHIDEventTap, event2);
+    __auto_type version = [[NSProcessInfo processInfo] operatingSystemVersion];
     
-    CFRelease(event1);
-    CFRelease(event2);
+    if ((debugLegacyPath == NO) &&
+        ((version.majorVersion > 11) ||
+        (version.majorVersion == 11 && version.minorVersion >= 7)))
+    {
+        NSError *error = nil;
+        
+        CGEventRef eventStart = [EventMaker createGestureEventWithSwipeDirection:dir phase:kCGGesturePhaseBegan error:&error];
+        NSCAssert(error == nil, @"Error: %@", error);
+        
+        CGEventRef eventEnd = [EventMaker createGestureEventWithSwipeDirection:dir phase:kCGGesturePhaseEnded error:&error];
+        NSCAssert(error == nil, @"Error: %@", error);
+        
+        CGEventPost(kCGHIDEventTap, eventStart);
+        CGEventPost(kCGHIDEventTap, eventEnd);
+        
+        return;
+    } else {
+        // I don't have any machines to test this, so leaving a legacy path.
+        
+        CFMutableDataRef event1Data = tl_CGEventDataCreateFromGesture((__bridge CFDictionaryRef)(swipeInfo[@(dir)][0]), (__bridge CFArrayRef)nullArray);
+        CFMutableDataRef event2Data = tl_CGEventDataCreateFromGesture((__bridge CFDictionaryRef)(swipeInfo[@(dir)][1]), (__bridge CFArrayRef)nullArray);
+        
+        CGEventRef event1 = CGEventCreateFromData(kCFAllocatorDefault, event1Data);
+        CGEventRef event2 = CGEventCreateFromData(kCFAllocatorDefault, event2Data);
+        
+        CFRelease(event1Data);
+        CFRelease(event2Data);
+        
+        CGEventPost(kCGHIDEventTap, event1);
+        CGEventPost(kCGHIDEventTap, event2);
+        
+        CFRelease(event1);
+        CFRelease(event2);
+    }
 }
 
 static CGEventRef SBFMouseCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef event, void *refcon) {

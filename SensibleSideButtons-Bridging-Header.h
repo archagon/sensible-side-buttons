@@ -3,3 +3,4 @@
 //
 
 #import "TouchEvents.h"
+#import "EventMaker_Compatibility.h"
