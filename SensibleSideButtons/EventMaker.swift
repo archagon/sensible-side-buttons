@@ -10,6 +10,10 @@ import AppKit
 
 @objc class EventMaker : NSObject {
     
+    enum EventMakerError: Error {
+        case error(String)
+    }
+    
     // "TLInfoSwipeDirection" == IOHIDSwipeMask?
     @objc enum SwipeDirection: UInt8 {
         case up     = 0b0001
@@ -28,13 +32,21 @@ import AppKit
             data.append(contentsOf: [0x00, 0x01, type, field, value.0, value.1, value.2, value.3])
         }
         
-        let event = CGEvent(source: nil)!
+        guard let event = CGEvent(source: nil) else {
+            throw EventMakerError.error("Could not create CGEvent")
+        }
         
-        event.type = CGEventType(rawValue: UInt32(NSEvent.EventType.gesture.rawValue))!
+        guard let eventType = CGEventType(rawValue: UInt32(NSEvent.EventType.gesture.rawValue)) else {
+            throw EventMakerError.error("Could not create CGEventType")
+        }
+        
+        event.type = eventType
         event.flags = CGEventFlags(rawValue: 256)
         event.timestamp =  DispatchTime.now().uptimeNanoseconds // not sure if this is even necessary
         
-        var eventData = EventMaker_Compatibility.data(from: event)!
+        guard var eventData = EventMaker_Compatibility.data(from: event) else {
+            throw EventMakerError.error("Could not retrieve data from CGEvent")
+        }
         
         // The base event data already contains this field. But adding it again seems to replace it.
         addField(data: &eventData, type: 0x40, field: 0x6e, value: (0,0,0, Subtype.swipe.rawValue))
@@ -44,7 +56,9 @@ import AppKit
         // Originally, this field was only filled in for CGGesturePhase.ended, but adding it every time seems to cause no harm.
         addField(data: &eventData, type: 0x40, field: 0x73, value: (0,0,0, swipeDirection.rawValue))
         
-        let newEvent = CGEvent(withDataAllocator: nil, data: eventData as CFData)!
+        guard let newEvent = CGEvent(withDataAllocator: nil, data: eventData as CFData) else {
+            throw EventMakerError.error("Could not create new CGEvent from modified data")
+        }
         
         return newEvent
     }
