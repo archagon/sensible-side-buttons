@@ -243,7 +243,7 @@ typedef NS_ENUM(NSInteger, MenuItem) {
         [menu addItem:[[NSMenuItem alloc] initWithTitle:[NSString stringWithFormat:@"%@ Website", appName] action:@selector(website:) keyEquivalent:@""]];
         assert(menu.itemArray.count - 1 == MenuItemWebsite);
         
-        [menu addItem:[[NSMenuItem alloc] initWithTitle:@"Open Accessibility Whitelist" action:@selector(accessibility:) keyEquivalent:@""]];
+        [menu addItem:[[NSMenuItem alloc] initWithTitle:@"Open Accessibility Allowlist" action:@selector(accessibility:) keyEquivalent:@""]];
         assert(menu.itemArray.count - 1 == MenuItemAccessibility);
         
         [menu addItem:[NSMenuItem separatorItem]];
@@ -485,7 +485,7 @@ typedef NS_ENUM(NSInteger, MenuItem) {
     
     switch (menuMode) {
         case MenuModeAccessibility: {
-            NSString* text = [NSString stringWithFormat:@"Uh-oh! It looks like %@ is not whitelisted in the Accessibility panel of your Security & Privacy System Preferences. This app needs to be on the Accessibility whitelist in order to process global mouse events. Please open the Accessibility panel below and add the app to the whitelist.", appDescription];
+            NSString* text = [NSString stringWithFormat:@"Uh-oh! It looks like %@ is not included in the Accessibility allowlist under Privacy & Security in System Settings. This app needs to be on the Accessibility allowlist in order to process global mouse events. Please open the Accessibility allowlist below and add the app to it.", appDescription];
             
             NSMutableAttributedString* string = [[NSMutableAttributedString alloc] initWithString:text attributes:alertAttributes];
             [string addAttribute:NSFontAttributeName value:boldFont range:[text rangeOfString:appDescription]];
