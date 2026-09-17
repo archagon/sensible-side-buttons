@@ -496,32 +496,29 @@ typedef NS_ENUM(NSInteger, MenuItem) {
     
     NSString *text = [self stringForMenuMode:menuMode];
     
+    NSMutableAttributedString* string = [NSMutableAttributedString new];
+    [string appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n" attributes:smallReturnAttributes]];
     switch (menuMode) {
         case MenuModeAccessibility: {
-            NSMutableAttributedString* string = [[NSMutableAttributedString alloc] initWithString:text attributes:alertAttributes];
-            [string addAttribute:NSFontAttributeName value:boldFont range:[text rangeOfString:appDescription]];
-            [string appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n" attributes:regularAttributes]];
-            [string appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n" attributes:smallReturnAttributes]];
-            [string appendAttributedString:[[NSAttributedString alloc] initWithString:copyright attributes:regularAttributes]];
-            return string;
+            [string appendAttributedString:[[NSMutableAttributedString alloc] initWithString:text attributes:alertAttributes]];
+            break;
         }
         case MenuModeDonation: {
-            NSMutableAttributedString* string = [[NSMutableAttributedString alloc] initWithString:text attributes:regularAttributes];
-            [string addAttribute:NSFontAttributeName value:boldFont range:[text rangeOfString:appDescription]];
-            [string appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n" attributes:regularAttributes]];
-            [string appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n" attributes:smallReturnAttributes]];
-            [string appendAttributedString:[[NSAttributedString alloc] initWithString:copyright attributes:regularAttributes]];
-            return string;
+            [string appendAttributedString:[[NSMutableAttributedString alloc] initWithString:text attributes:regularAttributes]];
+            break;
         }
         case MenuModeNormal: {
-            NSMutableAttributedString* string = [[NSMutableAttributedString alloc] initWithString:text attributes:regularAttributes];
-            [string addAttribute:NSFontAttributeName value:boldFont range:[text rangeOfString:appDescription]];
-            [string appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n" attributes:regularAttributes]];
-            [string appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n" attributes:smallReturnAttributes]];
-            [string appendAttributedString:[[NSAttributedString alloc] initWithString:copyright attributes:regularAttributes]];
-            return string;
+            [string appendAttributedString:[[NSMutableAttributedString alloc] initWithString:text attributes:regularAttributes]];
+            break;
         }
     }
+    [string addAttribute:NSFontAttributeName value:boldFont range:[text rangeOfString:appDescription]];
+    [string appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n" attributes:regularAttributes]];
+    [string appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n" attributes:smallReturnAttributes]];
+    [string appendAttributedString:[[NSAttributedString alloc] initWithString:copyright attributes:regularAttributes]];
+    [string appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n" attributes:smallReturnAttributes]];
+    
+    return string;
 }
 
 -(CGFloat) margin {
