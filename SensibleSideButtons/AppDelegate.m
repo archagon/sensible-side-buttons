@@ -125,6 +125,8 @@ typedef NS_ENUM(NSInteger, MenuItem) {
 @interface AboutView: NSView
 @property (nonatomic, retain) NSTextView* text;
 @property (nonatomic, assign) MenuMode menuMode;
++(NSString *) stringForMenuMode:(MenuMode)menuMode;
++(NSAttributedString *) attributedStringForMenuMode:(MenuMode)menuMode;
 -(CGFloat) margin;
 @end
 
@@ -428,18 +430,27 @@ typedef NS_ENUM(NSInteger, MenuItem) {
 
 @implementation AboutView
 
--(CGFloat) margin {
-    // I hate that we have to special-case this, but I'm not sure how else to get the standard menu text inset.
-    if (@available(macOS 27.0, *)) {
-        return 25;
-    } else {
-        return 19;
++(NSString *) stringForMenuMode:(MenuMode)menuMode {
+    NSString* appName = [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString*)kCFBundleNameKey];
+    NSString* appDescription = [NSString stringWithFormat:@"%@ %@", appName, [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"]];
+    
+    switch (menuMode) {
+        case MenuModeAccessibility: {
+            NSString* text = [NSString stringWithFormat:@"Uh-oh! It looks like %@ is not included in the Accessibility allowlist under Privacy & Security in System Settings. This app needs to be on the Accessibility allowlist in order to process global mouse events. Please open the Accessibility allowlist below and add the app to it.", appDescription];
+            return text;
+        }
+        case MenuModeDonation: {
+            NSString* text = [NSString stringWithFormat:@"Thanks for using %@!\nIf you find this utility useful, please consider making a purchase through the Amazon affiliate link on the website below. It won't cost you an extra cent! 😊", appDescription];
+            return text;
+        }
+        case MenuModeNormal: {
+            NSString* text = [NSString stringWithFormat:@"Thanks for using %@!", appDescription];
+            return text;
+        }
     }
 }
 
--(void) setMenuMode:(MenuMode)menuMode {
-    _menuMode = menuMode;
-    
++(NSAttributedString *) attributedStringForMenuMode:(MenuMode)menuMode {
     NSFont* font = [NSFont menuFontOfSize:13];
     
     NSFontDescriptor* boldFontDesc = [NSFontDescriptor fontDescriptorWithFontAttributes:@{
@@ -483,41 +494,50 @@ typedef NS_ENUM(NSInteger, MenuItem) {
     NSString* appDescription = [NSString stringWithFormat:@"%@ %@", appName, [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"]];
     NSString* copyright = @"Copyright © 2026 Alexei Baboulevitch.";
     
+    NSString *text = [self stringForMenuMode:menuMode];
+    
     switch (menuMode) {
         case MenuModeAccessibility: {
-            NSString* text = [NSString stringWithFormat:@"Uh-oh! It looks like %@ is not included in the Accessibility allowlist under Privacy & Security in System Settings. This app needs to be on the Accessibility allowlist in order to process global mouse events. Please open the Accessibility allowlist below and add the app to it.", appDescription];
-            
             NSMutableAttributedString* string = [[NSMutableAttributedString alloc] initWithString:text attributes:alertAttributes];
             [string addAttribute:NSFontAttributeName value:boldFont range:[text rangeOfString:appDescription]];
             [string appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n" attributes:regularAttributes]];
             [string appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n" attributes:smallReturnAttributes]];
             [string appendAttributedString:[[NSAttributedString alloc] initWithString:copyright attributes:regularAttributes]];
-            
-            [self.text.textStorage setAttributedString:string];
-        } break;
+            return string;
+        }
         case MenuModeDonation: {
-            NSString* text = [NSString stringWithFormat:@"Thanks for using %@!\nIf you find this utility useful, please consider making a purchase through the Amazon affiliate link on the website below. It won't cost you an extra cent! 😊", appDescription];
-            
             NSMutableAttributedString* string = [[NSMutableAttributedString alloc] initWithString:text attributes:regularAttributes];
             [string addAttribute:NSFontAttributeName value:boldFont range:[text rangeOfString:appDescription]];
             [string appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n" attributes:regularAttributes]];
             [string appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n" attributes:smallReturnAttributes]];
             [string appendAttributedString:[[NSAttributedString alloc] initWithString:copyright attributes:regularAttributes]];
-            
-            [self.text.textStorage setAttributedString:string];
-        } break;
+            return string;
+        }
         case MenuModeNormal: {
-            NSString* text = [NSString stringWithFormat:@"Thanks for using %@!", appDescription];
-            
             NSMutableAttributedString* string = [[NSMutableAttributedString alloc] initWithString:text attributes:regularAttributes];
             [string addAttribute:NSFontAttributeName value:boldFont range:[text rangeOfString:appDescription]];
             [string appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n" attributes:regularAttributes]];
             [string appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n" attributes:smallReturnAttributes]];
             [string appendAttributedString:[[NSAttributedString alloc] initWithString:copyright attributes:regularAttributes]];
-            
-            [self.text.textStorage setAttributedString:string];
-        } break;
+            return string;
+        }
     }
+}
+
+-(CGFloat) margin {
+    // I hate that we have to special-case this, but I'm not sure how else to get the standard menu text inset.
+    if (@available(macOS 27.0, *)) {
+        return 25;
+    } else {
+        return 19;
+    }
+}
+
+-(void) setMenuMode:(MenuMode)menuMode {
+    _menuMode = menuMode;
+    
+    NSAttributedString *string = [self.class attributedStringForMenuMode:menuMode];
+    [self.text.textStorage setAttributedString:string];
     
     [self setNeedsLayout:YES];
 }
